@@ -815,6 +815,10 @@ calculator exampleは、`.codetta`、MusicXML、SVG、HTML、WAVを生成し、�
 
 Composerを起動する場合：
 
+Windowsでは、clone後にリポジトリ直下の`Codetta Composer.cmd`をダブルクリックするとブラウザで起動できます。初回起動時はPython 3.10以上を検出し、`.venv`の作成と依存パッケージのインストールを自動で行います。起動中は表示されたウィンドウを開いたままにし、終了時はそのウィンドウを閉じます。
+
+コマンドラインから起動する場合：
+
 ```powershell
 .\.venv\Scripts\python.exe -m composer
 ```
