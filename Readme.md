@@ -1,398 +1,703 @@
 # Codetta
 
-A programming language that turns musical scores into executable programs, where rhythm and musical structure express computation.
+Codetta is a visual programming language whose source syntax is conventional musical notation.
 
-## 五線譜を表示する
+Codettaは、**通常の五線譜そのものを構文として使うビジュアルプログラミング言語**です。ユーザーは音符、音価、タイ、休符、横方向の時間、縦方向の声部、スラー、括弧線、小節などを編集してプログラムを書きます。
 
-Python 3.10以上。リポジトリのルートで実行してください。通常表示はMusicXMLをVerovioで組版した五線譜です。
+CodettaはMusicXMLを独自解釈する仕組みではありません。Composer上に表示される五線譜が、Scratchのブロックに相当する標準視覚構文です。
 
-初回セットアップ：
+`.codetta`は五線譜の構造を保存する正式なファイル形式です。v0.1ではJSONを使用しますが、JSON自体をユーザー向けのソース構文とはみなしません。
+
+```text
+五線譜        = Codettaの標準視覚構文
+.codetta      = 五線譜構造のシリアライズ形式
+Specification = 五線譜をプログラムとして読む規則
+Performer     = Specificationに従う実行環境
+MusicXML      = 外部楽譜ソフトとの交換形式
+```
+
+## 開発状況
+
+現在の`develop`ブランチには、数式の解析、旧IR、実行用SVG、MusicXML生成、Verovioによる五線譜表示、四則演算、WAV再生のプロトタイプがあります。
+
+以下に定義する新アーキテクチャへの移行はまだ完了していません。
+
+- 正式なCodetta Score Model
+- `.codetta`の保存と読込
+- Score ModelからASTへのParser / Semantic Analyzer
+- Score Modelを直接編集するComposer
+- Score Modelを演奏する新しいPerformer
+- Score ModelとMusicXML間の双方向Adapter
+
+このREADMEの「Codetta v0.1 Language Specification」以降を、今後の正式な実装仕様とします。現在のプロトタイプの実行方法は末尾に記載しています。
+
+## Codetta全体の役割
+
+### Codetta
+
+五線譜上の時間、同時性、声部、音価、タイ、休符、小節、グルーピングへ計算可能な意味を与える言語仕様です。
+
+### Composer
+
+Codetta標準GUIエディタ / IDEです。ユーザーは通常の楽譜を編集する感覚でプログラムを作り、`.codetta`として保存します。JSON、XML、AST、IR、内部IDは通常画面に表示しません。
+
+### Conductor
+
+数式や通常のコードなど、別の表現からCodetta Score Modelへ変換するコンパイラです。出力はScore Modelまたは`.codetta`です。
+
+### Performer
+
+`.codetta`を読み、Score ModelをAST / IRへ変換して実行します。同じScore Modelを通常の楽譜として演奏します。
+
+### MusicXML Adapter
+
+Codetta Score ModelとMusicXMLを相互変換します。MusicXMLは外部楽譜ソフトとのImport / Exportにだけ使用し、Codetta本体のソース形式や実行形式にはしません。
+
+## 基本アーキテクチャ
+
+```text
+Composer ─────────┐
+                  ↓
+Conductor ─→ Codetta Score Model ─→ .codetta
+                  ↓                    ↓
+                  └──────← deserialize ┘
+                           ↓
+                Parser / Semantic Analyzer
+                           ↓
+                         AST / IR
+                           ↓
+                        Performer
+
+Codetta Score Model ↔ MusicXML Adapter ↔ MuseScore等
+Codetta Score Model → Score Renderer → Composerの五線譜
+```
+
+Score Modelを唯一の編集状態とします。レンダリング済みSVG、MusicXML、AST、IRをComposerの編集状態にはしません。
+
+## Codetta v0.1 Language Specification
+
+v0.1では整数、四則演算、グルーピング、評価順序、最終結果だけを扱います。除算の中間値と結果は正確な有理数です。浮動小数点による丸めは行いません。
+
+Codetta v0.1では、楽譜を二種類の合成として読みます。
+
+| 楽譜の構造 | プログラム上の意味 |
+|---|---|
+| 同一声部内の横方向の連結 | 加算と左から右の評価順序 |
+| 括弧線でまとめた複数声部 | 乗算と上から下の評価順序 |
+| 親グループ内の破線フレーズ | 親の合成演算に対する逆操作 |
+| タイで結ばれた同音高の音符 | 一つの値の持続 |
+| 音価 | 正整数の大きさ |
+| 休符 | 値の不在。レイアウト上の時間だけを占める |
+| 実線スラー | 横方向の部分式のグルーピング |
+| 小節 | 一つの評価ブロック |
+| 小節線 | ブロック境界 |
+| 終止線 | 最終結果の確定 |
+
+`C4 = ADD`や`D4 = SUB`のような対応は定義しません。演算は単独の音符ではなく、音符同士の時間関係、同時性、声部、グループ構造から生じます。
+
+## 1. 数値
+
+一つの正整数リテラルは、同じ音高をタイで結んだ一連の音符です。四分音符を1単位とし、タイチェーンの音価の合計を整数値とします。
+
+```text
+value(chain) = chainの総音価 / 四分音符の音価
+```
+
+| 記譜 | 値 |
+|---|---:|
+| 四分音符 | 1 |
+| 二分音符 | 2 |
+| 付点二分音符 | 3 |
+| 全音符 | 4 |
+| 全音符と四分音符をタイで接続 | 5 |
+
+数値チェーンは次の条件を満たさなければなりません。
+
+- 一つ以上の有音程音符からなる。
+- 複数音符の場合、同じ声部と音高で時間的に連続する。
+- 複数音符をすべてタイで接続する。
+- 音価の合計が四分音符の整数倍になる。
+- 小節線を越えない。
+- 休符や和音をチェーン内に含めない。
+
+タイで接続されていない音符は別々の数値です。付点二分音符1個と、二分音符の後に四分音符を置いたものは、どちらも評価結果が3になり得ますが、前者は`Integer(3)`、後者は`Add(Integer(2), Integer(1))`です。
+
+### ゼロ
+
+休符は「値がない」ことを表します。休符だけで構成される空の横フレーズを加法単位元0とします。
+
+```text
+H() = 0
+```
+
+これにより、特定の休符を直接「整数0」に割り当てずにゼロを表現できます。
+
+### 負数
+
+負数は音符自体の属性にはしません。加算の中で破線フレーズに囲まれた値を、加法逆元として読みます。
+
+```text
+H(inverse(3)) = -3
+```
+
+### 音高
+
+音高はv0.1では整数の大きさや演算子を決定しません。タイで持続する同一音の識別、声部や値の聴き分け、旋律・和声表現に使用します。
+
+将来、型、変数、パターン、データ参照などへ音高や音程関係を使用できるよう、v0.1で固定的な命令コードを割り当てません。
+
+## 2. 横方向：加算と減算
+
+同じ声部・同じ横グループ内の式を、開始位置の早い順に加算します。
+
+```text
+H(e1, e2, ..., en) = value(e1) + value(e2) + ... + value(en)
+```
+
+評価順序は左から右です。
+
+```text
+[3拍] [5拍]  →  3 + 5
+```
+
+横グループ内の子を破線フレーズで囲むと、その子の加法逆元になります。
+
+```text
+[3拍] [破線で囲んだ5拍]  →  3 + (-5)  →  3 - 5
+```
+
+破線記号を単独の`SUB`命令としては扱いません。横方向の加算グループ内にあるため、加法逆元として解釈されます。
+
+## 3. 縦方向：乗算と除算
+
+複数の声部を同じ時間範囲に配置し、通常の括弧線でまとめると垂直グループになります。
+
+```text
+P(e1, e2, ..., en) = value(e1) × value(e2) × ... × value(en)
+```
+
+計算上の評価順序は上の声部から下の声部です。音楽としては通常の楽譜と同様に同時再生します。
+
+短い声部の残り時間は休符で埋めます。休符はグループの時間範囲を保ちますが、声部の計算値には加算されません。
+
+垂直グループ内の子を破線フレーズで囲むと、その子の乗法逆元になります。
+
+```text
+P(8, inverse(2)) = 8 × (1 / 2) = 4
+```
+
+除算は独立した音符命令ではなく、垂直構造内の逆元として表現されます。0の乗法逆元は実行エラーです。
+
+## 4. グルーピングと評価順序
+
+Codettaのグループは、通常の楽譜に表示できるスパナーを使用します。
+
+| 記譜 | 構造 |
+|---|---|
+| 実線スラー | 一つの声部内の横方向グループ |
+| 実線括弧 | 複数声部にまたがる垂直グループ |
+| 破線スラー・破線括弧 | 親の合成演算に対する逆元 |
+| スパナーの入れ子 | 部分式の入れ子 |
+
+グループ範囲は、完全に分離しているか、一方が他方を完全に含む必要があります。意味が曖昧になる交差スパナーは構文エラーです。
+
+評価順序は次のとおりです。
+
+1. 内側のグループを先に評価する。
+2. 横グループは左から右へ評価する。
+3. 垂直グループは上の声部から下の声部へ評価する。
+4. 小節を左から右へ評価する。
+5. 最後の小節の値をプログラム結果として出力する。
+
+純粋な四則演算では乗算の順序による値の違いはありませんが、将来の関数呼び出しや副作用に備えて順序を仕様化します。
+
+## 5. 小節、和音、声部
+
+v0.1では一つの小節を一つの評価ブロックとします。
+
+- 小節線で式の評価を確定する。
+- 複数小節は左から右へ実行する。
+- 最後の小節の値を最終結果とする。
+- 最終小節の終止線を出力位置とする。
+- 数値リテラルを構成するタイは小節線を越えない。
+
+変数や状態はまだないため、前の小節の値を次の小節から参照する機能はv0.1に含めません。
+
+Score Model、Composer、MusicXML Adapter、Renderer、Playerは和音と複数声部を扱います。複数声部はv0.1の乗算と除算に使用します。
+
+和音はScore Modelへ保存し、通常の和音として表示・演奏できます。ただし、和音を計算上の値としてどう解釈するかはv0.1では未定義です。意味解析中に和音が式として現れた場合はエラーにします。将来のtuple、複数値、複数引数に予約します。
+
+## 6. ASTと形式意味論
+
+Score Parserは五線譜から次のASTを構築します。
+
+```text
+Program(blocks)
+Block(expression)
+
+Integer(value, source_ref)
+Sum(terms)
+Product(factors)
+Negate(body)
+Reciprocal(body)
+```
+
+`source_ref`は元の音符、タイ、スラー、括弧、小節を参照します。エラー表示、Debug Mode、実行中のハイライトに使用します。
+
+値関数`V`を次のように定義します。
+
+```text
+V(Integer(n))    = n
+V(Sum(xs))       = Σ V(x)
+V(Product(xs))   = Π V(x)
+V(Negate(x))     = -V(x)
+V(Reciprocal(x)) = 1 / V(x)    if V(x) != 0
+```
+
+`Reciprocal(0)`はゼロ除算エラーです。
+
+`(3 + 5) * 2`のASTは次の形です。
+
+```text
+Program
+└─ Block
+   └─ Product
+      ├─ Sum
+      │  ├─ Integer(3)
+      │  └─ Integer(5)
+      └─ Integer(2)
+```
+
+実行用IRは楽譜の音高や位置を持たない計算構造にします。
+
+```text
+Emit
+└─ Multiply
+   ├─ Add
+   │  ├─ Constant(3)
+   │  └─ Constant(5)
+   └─ Constant(2)
+```
+
+音高、開始位置、音価、声部などの音楽情報はScore Modelに残し、IRへ複製しません。
+
+## Codetta Score Model
+
+Score Modelは、Composerが編集し、`.codetta`が保存する正式なソースモデルです。ASTや計算結果ではなく、五線譜構造を保持します。
+
+```text
+Score
+├── metadata
+├── parts
+│   └── staves
+│       └── measures
+│           ├── time signature
+│           ├── key signature
+│           ├── clef
+│           └── voices
+│               └── events
+│                   ├── Note
+│                   ├── Rest
+│                   └── Chord
+└── spanners
+    ├── Tie
+    ├── Slur
+    └── Bracket
+```
+
+主なモデルは次のとおりです。
+
+```text
+Score
+  format_version
+  language_version
+  metadata
+  parts[]
+  spanners[]
+
+Measure
+  id
+  number
+  time_signature
+  key_signature
+  duration
+  voices[]
+
+Voice
+  id
+  staff
+  events[]
+
+Note
+  id
+  start
+  duration
+  pitch
+  accidental
+  stem
+
+Rest
+  id
+  start
+  duration
+
+Chord
+  id
+  start
+  duration
+  pitches[]
+
+Spanner
+  id
+  type: tie | slur | bracket
+  line_style: solid | dashed
+  start_anchor
+  end_anchor
+  staff_range
+  voice_range
+```
+
+`start`と`duration`は浮動小数点ではなく有理数で保持します。IDはタイやスパナーの参照、Composerの選択、Undo / Redoに使用し、通常画面には表示しません。
+
+## `.codetta`保存形式
+
+v0.1ではUTF-8 JSONを使用します。将来、音源やサムネイルなどを同梱する必要が生じた場合はZIPコンテナへ移行できます。
+
+概略例：
+
+```json
+{
+  "format": "codetta-score",
+  "format_version": "0.1",
+  "language_version": "0.1",
+  "score": {
+    "metadata": {
+      "title": "Codetta example"
+    },
+    "parts": [
+      {
+        "id": "part-1",
+        "staves": [
+          {
+            "id": "staff-1",
+            "measures": [
+              {
+                "id": "measure-1",
+                "number": 1,
+                "time_signature": {"beats": 8, "beat_type": 4},
+                "key_signature": {"fifths": 0},
+                "clef": {"sign": "G", "line": 2},
+                "voices": [
+                  {
+                    "id": "voice-1",
+                    "events": [
+                      {
+                        "type": "note",
+                        "id": "note-1",
+                        "start": {"n": 0, "d": 1},
+                        "duration": {"n": 3, "d": 4},
+                        "pitch": {"step": "C", "alter": 0, "octave": 4}
+                      },
+                      {
+                        "type": "note",
+                        "id": "note-2",
+                        "start": {"n": 3, "d": 4},
+                        "duration": {"n": 1, "d": 4},
+                        "pitch": {"step": "D", "alter": 0, "octave": 4}
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "spanners": [
+      {
+        "type": "slur",
+        "id": "group-1",
+        "line_style": "solid",
+        "start_anchor": "note-1",
+        "end_anchor": "note-2"
+      }
+    ]
+  }
+}
+```
+
+時刻と音価は全音符を1とする有理数です。四分音符は`{"n": 1, "d": 4}`、付点二分音符は`{"n": 3, "d": 4}`です。
+
+`.codetta`には以下のような解析済みの意味を保存しません。
+
+```json
+{
+  "meaning": "integer",
+  "value": 3,
+  "operation": "multiply",
+  "result": 16
+}
+```
+
+値と演算は、保存された音価、タイ、時間的位置、声部、スパナーからLanguage Specificationに従って導出します。
+
+Serialization層ではJSONスキーマ、バージョン、ID、参照、イベントの時刻範囲と重複、タイの連続性、スパナーの範囲、小節長を検証します。
+
+## Score Parser / Semantic Analyzer
+
+```text
+.codetta
+  ↓ deserialize
+Score Model
+  ↓ notation validation
+Validated Score
+  ↓ score parser
+Codetta AST
+  ↓ semantic analysis
+Checked AST
+  ↓ lowering
+Execution IR
+  ↓ evaluator
+Result
+```
+
+Score Parserは次を行います。
+
+1. タイを解決して数値チェーンを作る。
+2. 総音価を四分音符単位の整数へ変換する。
+3. 休符を計算対象から除外する。
+4. スラーから横方向グループを作る。
+5. 括弧線と声部範囲から垂直グループを作る。
+6. 破線グループを親の軸に応じて`Negate`または`Reciprocal`へ変換する。
+7. 小節ごとに`Block`を作る。
+8. 最後の小節へ`Emit`を設定する。
+
+構造が曖昧な場合は推測して実行せず、元の小節、音符、スパナーを示す診断を返します。
+
+## Performer
+
+Performerには二つの独立した入力経路を持たせます。
+
+- 計算：AST / IRを評価する。
+- 演奏：Score Modelの音符を楽譜どおり再生する。
+
+演奏データをIRから再構築しません。縦に配置された声部は音楽として同時に鳴ります。計算時には仕様化された順序で上から下へ評価します。
+
+AST / IRの`source_ref`を使い、実行中のノードに対応する五線譜上の音符やグループをハイライトできます。
+
+## Composer
+
+ComposerはCodettaの標準ソースコードエディタです。最初の実装はPythonから起動するローカルWebアプリを想定します。
+
+```powershell
+python -m composer
+```
+
+通常画面には五線譜だけを表示します。主な編集操作は次のとおりです。
+
+- 音符と休符の挿入
+- 音価と音高の変更
+- 臨時記号の設定
+- タイの接続と解除
+- 和音への音符追加
+- 声部の追加と切り替え
+- 小節の追加と削除
+- 実線スラーによる横グループ化
+- 破線スラーによる逆操作
+- 括弧線による複数声部のグループ化
+- 再生と停止
+- `.codetta`の保存と読込
+- Undo / Redo
+
+### Normal Mode
+
+JSON、XML、内部ID、AST、IR、計算値、演算名、評価順序、解析結果を表示しません。
+
+### Debug Mode
+
+Semantic Analyzerが生成した次の情報を別レイヤーとして重ねます。
+
+- 音価から導出した整数
+- `Sum`と`Product`の範囲
+- `Negate`と`Reciprocal`
+- 評価順序とデータフロー
+- 構文・意味エラー
+- 現在実行中のノード
+
+Debug情報は`.codetta`へ保存せず、Score Modelから毎回再生成します。
+
+## Conductor
+
+Conductorは通常の数式や将来のテキスト言語からScore Modelを生成します。
+
+```text
+通常の数式
+  ↓ text parser
+Text AST
+  ↓ score layout
+Codetta Score Model
+  ↓ serialization
+.codetta
+```
+
+定数畳み込みは行いません。`(3 + 5) * 2`を`16`の音価へ置き換えず、加算、グルーピング、乗算を五線譜上に保存します。
+
+ConductorとComposerが作ったScore Modelは、同じScore ParserとSemantic Analyzerで検証します。
+
+## MusicXMLとの境界
+
+MusicXMLは外部交換形式です。
+
+```text
+Score Model → MusicXML Exporter → MusicXML
+MusicXML → MusicXML Importer → Score Model
+```
+
+PerformerはMusicXMLを直接実行しません。MusicXMLをCodettaとして利用する場合は、必ずScore ModelへImportして意味解析します。
+
+音符、休符、和音、音高、音価、臨時記号、声部、五線、小節、拍子、調号、音部記号、タイ、実線・破線のスラーと括弧、終止線をImport / Export対象とします。
+
+一般のMusicXMLをScore Modelへ取り込めますが、一般の楽曲がCodettaプログラムとして有効とは限りません。Import後にSemantic Analyzerで検証し、無効な箇所をComposer上に表示します。
+
+MuseScoreなどの外部ソフトが声部番号、タイ、破線、スパナー範囲を変更した場合はCodettaとしての意味も変わる可能性があります。
+
+> Codetta MusicXML Profileに含まれる標準記号が維持された場合、`.codetta → MusicXML → .codetta`で得られるASTの意味が一致する。
+
+ファイルのバイト単位の一致や、Codettaと無関係なMusicXMLメタデータの完全保存は保証しません。
+
+## `(3 + 5) * 2`の標準表現
+
+最初のE2E例は1小節の8/4拍子で表します。
+
+上段には付点二分音符の3と、全音符・四分音符をタイで接続した5を置き、実線スラーでまとめます。下段には二分音符の2と、残り6拍を埋める休符を置きます。上下の声部を8拍の実線括弧でグループ化し、最後を終止線にします。
+
+```text
+8/4
+
+上声部  | 3拍          5拍                         |
+        | 付点二分音符  全音符 〜 四分音符         |
+        | └────── 実線スラー ──────┘               |
+        |                                           | 実線括弧
+下声部  | 2拍          6拍分の休符                 |
+        | 二分音符                                  ||
+```
+
+Score Parserは次のASTを作ります。
+
+```text
+Product
+├── Sum
+│  ├── Integer(3)
+│  └── Integer(5)
+└── Integer(2)
+```
+
+Performerは16を出力します。音楽としては8拍で、上下の声部を同時に再生します。
+
+## 目標ディレクトリ構成
+
+```text
+codetta/
+├── score_model.py
+├── serialization.py
+├── score_parser.py
+├── semantic_analyzer.py
+├── ast.py
+├── ir.py
+└── semantics.py
+
+composer/
+├── server.py
+├── commands.py
+├── session.py
+└── static/
+
+conductor/
+├── parser.py
+├── compiler.py
+└── score_builder.py
+
+performer/
+├── evaluator.py
+├── player.py
+└── runtime.py
+
+adapters/
+└── musicxml/
+    ├── importer.py
+    └── exporter.py
+
+rendering/
+├── renderer.py
+└── debug_overlay.py
+
+examples/
+├── calculator/
+└── notation/
+
+tests/
+```
+
+表示層はScore Modelだけを受け取り、評価器を呼びません。各層は相互の内部実装へ依存せず、Score ModelとAST / IRの公開境界を介して接続します。
+
+## 最初のE2E完了条件
+
+1. Composerを起動できる。
+2. 空の通常五線譜を表示できる。
+3. 音符、休符、タイ、声部、グループを編集できる。
+4. `(3 + 5) * 2`を五線譜として作成できる。
+5. `.codetta`として保存できる。
+6. 再読込後に同じScore Modelと五線譜を復元できる。
+7. Score ParserがASTを生成できる。
+8. Performerが16を出力できる。
+9. Score Modelの音符を同時声部を含めて再生できる。
+10. MusicXMLへExportできる。
+11. ExportしたMusicXMLをImportし、同じ意味のASTを復元できる。
+
+自動テストでは、`.codetta`内に`integer`、`multiply`、計算済みの`16`などが保存されていないことも確認します。音価、タイ、声部、スパナーを変更した場合に、その視覚的変更からASTと結果が変わることを検証します。
+
+## 移行方針
+
+1. Score Modelと`.codetta` Serializationを追加する。
+2. Score ModelからASTを作るParser / Semantic Analyzerを実装する。
+3. Conductorを`Text AST → Score Model`へ変更する。
+4. Performerを`.codetta → Score Model → AST / IR`へ変更する。
+5. PlayerをScore Modelのポリフォニック再生へ変更する。
+6. MusicXML生成を`IR → MusicXML`から`Score Model ↔ MusicXML`へ移す。
+7. ComposerをScore Modelの標準GUIとして実装する。
+8. 旧実行用SVGを互換機能として非推奨化する。
+
+## 現在のプロトタイプを実行する
+
+以下は新仕様へ移行する前の既存プロトタイプ用コマンドです。`.codetta`とComposerはまだ実装されていません。
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements-rendering.txt
 ```
 
-ブラウザで開ける楽譜を作成：
+通常の五線譜表示：
 
 ```powershell
 .\.venv\Scripts\python.exe -m conductor "(3 + 5) * 2" -o examples/calculator/score.html
 ```
 
-[サンプルの楽譜](examples/calculator/score.html)をブラウザで開いてください。通常表示には演算名や値のラベルを出しません。**Debug mode**をオンにすると、IRの構造とリテラルの値を楽譜上に注記します。**Print / Save PDF**からPDFとして保存できます。HTMLはフォントの輪郭を含むSVGを内蔵し、閲覧時のサーバーやネット接続は不要です。
-
-SVG・MusicXMLの出力と、既存MusicXMLの表示：
-
-```powershell
-.\.venv\Scripts\python.exe -m conductor "(3 + 5) * 2" -o examples/calculator/score.svg
-.\.venv\Scripts\python.exe -m conductor "(3 + 5) * 2" -o examples/calculator/score.musicxml
-.\.venv\Scripts\python.exe -m rendering examples/notation/features.musicxml -o examples/notation/features.html
-```
-
-`.svg`は通常の五線譜、`.html`は閲覧・印刷用ページ、`.musicxml`は交換用の楽譜です。複数ページのSVGは`score.svg`、`score-2.svg`…に分けて出力します。`--debug`を指定したSVG・MusicXMLにだけIR注記を含めます。表示用拍子・調号・音部記号は`--time 3/4 --fifths -2 --clef bass`のように指定できます。
-
-和音・休符・複数声部・拍子や調号の変更を含む例は[features.musicxml](examples/notation/features.musicxml)と[その表示](examples/notation/features.html)です。表示層の設計・記号の読み方・制約は[docs/rendering.md](docs/rendering.md)を参照してください。
-
-## プログラムを実行する
-
-表示と実行は別の経路です。実行には既存のCodetta専用SVG形式を明示して出力します。この経路とMusicXML生成には外部ライブラリは不要です。
+旧実行用SVGによる評価：
 
 ```powershell
 python -m conductor "(3 + 5) * 2" --format executable-svg -o examples/calculator/program.codetta.svg
 python -m performer examples/calculator/program.codetta.svg --no-play
 ```
 
-保存した実行用SVGだけを読み直し、`16`を出力します。Windowsでの再生・トレースと、WAV出力：
-
-```powershell
-python -m performer examples/calculator/program.codetta.svg --trace
-python -m performer examples/calculator/program.codetta.svg --no-play --wav examples/calculator/performance.wav
-```
-
-`--bpm 180`で演奏速度を変更できます。テンポは計算結果に影響しません。先頭がマイナスの式は`python -m conductor -o negative.musicxml -- "-(3 + 5)"`のように渡します。
-
-テスト（Verovioを含む環境）：
+テスト：
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-正式なMusicXMLスキーマでの検証を再実行する手順は[表示層の検証手順](docs/rendering.md#検証)を参照してください。
+現在の表示プロトタイプの詳細は[docs/rendering.md](docs/rendering.md)を参照してください。この文書には旧IRからMusicXMLを生成する現在の実装が含まれており、新しいScore Model中心の仕様へ順次更新します。
 
-## ディレクトリ構成
+## License
 
-```text
-Codetta/
-├── conductor/
-│   ├── parser.py          # 入力式 → AST
-│   ├── compiler.py        # AST → IR（定数畳み込みなし）
-│   └── score_writer.py    # IR → 既存の実行用SVG
-├── rendering/
-│   ├── model.py           # IR → 表示用の音符・声部・記譜情報
-│   ├── musicxml.py        # 表示モデル → MusicXML 4.0
-│   └── renderer.py        # Verovioによる通常の五線譜SVG・HTML
-├── performer/
-│   ├── score_reader.py    # SVG楽譜 → IR
-│   ├── evaluator.py       # 正確な有理数による評価
-│   └── player.py          # 演奏計画・WAV生成・Windows再生
-├── codetta/
-│   ├── ast.py
-│   ├── ir.py
-│   ├── semantics.py
-│   └── notation.py        # 共通の楽譜記号と音価
-├── examples/
-│   ├── calculator/
-│   └── notation/
-├── docs/
-└── tests/
-```
-
-各パッケージの`__init__.py`と、CLI用の`__main__.py`も配置しています。
-
-## 設計仕様
-
-以下は初期の設計仕様です。「9. v0.1の実装仕様」は既存の実行用形式を説明しています。新しい通常の五線譜表示は独立した表示層で、[docs/rendering.md](docs/rendering.md)に仕様を記載しています。
-
-Codetta v0.1は、**楽譜を「符号付きの時間量を組み立てる構造」として扱う言語**にするのがよいと思います。
-
-数値はフレーズの長さ、加算はフレーズの連結、乗算・除算はフレーズの伸縮として表します。これなら「ドならADD」のような命令置換を避けながら、四則演算を一つの考え方で説明できます。
-
-ただし、通常の楽譜だけで減算や「別の式の結果を倍率にする操作」まで一意に表すのは難しいです。そこで、**既存の音楽記法を基本に、意味が明示された少数のCodetta専用記号を加える**方針を提案します。
-
-## 1. 言語の意味論
-
-Codettaの式は、一つの数値を返します。その値を「基準拍に対する符号付きの時間量」と解釈します。
-
-| 構造 | 計算上の意味 | 音楽的な対応 |
-|---|---|---|
-| 数値 | 基準拍の何倍か | フレーズの記譜上の長さ |
-| 加算 | 時間量を足す | フレーズを順につなぐ |
-| 減算 | 後半の寄与を反転して足す | 負の寄与を持つフレーズをつなぐ |
-| 乗算 | 時間量を倍率で伸縮する | リズムの拡大・縮小 |
-| 除算 | 時間量を倍率の逆数で伸縮する | リズムの逆方向の拡大・縮小 |
-| 括弧 | 部分式の範囲を限定する | フレーズのまとまり |
-| 出力 | 最上位フレーズの値を表示する | 演奏の終了時に結果を確定する |
-
-ここでいう時間量は、**実際に経過した再生時間ではありません**。テンポを変えても計算結果は変わりません。
-
-また、負数やゼロがあるので、計算結果を演奏時間そのものに一致させることもできません。計算には符号付きの量を使い、再生には非負の時間を使います。
-
-### 数値の扱い
-
-v0.1では、次の仕様を推奨します。
-
-- 入力リテラルは整数。
-- 中間値と結果は正確な有理数。
-- `/` は通常の除算。`3 / 2` は `3/2`。
-- ゼロ除算は実行エラー。
-- 浮動小数点による丸めは行わない。
-- 単項マイナスも許可し、`-3` や `-(3 + 5)` を書けるようにする。
-
-「整数」は入力する数値の制約とします。結果まで整数に限定するなら、整数除算や割り切れない場合のエラー規則が別途必要です。
-
-## 2. 楽譜の各要素をどう対応させるか
-
-### 横方向：順序と加算
-
-同じ計算フレーズ内に、長さ3のフレーズと長さ5のフレーズを順に置くと、合計は8です。
-
-> 横につなぐと長さが足される。
-
-これを加算の基本にします。個々の音符に加算命令を割り当てる必要はありません。
-
-ただし、横に並ぶすべての要素を無条件に加算するわけではありません。**同じ囲みの中の主声部を連結した場合に加算する**という規則にします。
-
-### 音価：数値の大きさ
-
-基準となる四分音符を1単位とします。
-
-- 四分音符1個：1
-- 二分音符1個：2
-- 付点二分音符1個：3
-- 全音符と四分音符をタイで結ぶ：5
-
-数値リテラルは、一つの囲みの中にある、単音またはタイで結ばれた持続として表します。その記譜上の総音価が値です。
-
-3と5は次のように区別できます。
-
-- 数値8：一つの数値囲みで8拍を持続する。
-- 式`3 + 5`：二つの数値囲みを連結する。
-
-結果は同じでも、元の構造を残せます。
-
-### 縦方向・声部：値を担う声部と、伸縮を制御する声部
-
-乗除算では、二つの役割を持つ声部を縦に配置します。
-
-- **主声部**：伸縮されるフレーズ。
-- **制御声部**：伸縮倍率を求めるフレーズ。
-
-たとえば`A * B`では、主声部がA、制御声部がBです。制御声部の計算結果を、主声部の時間量に掛けます。
-
-制御声部は、主声部に加算されません。声部の役割は、楽譜上で明示します。
-
-これは、単に上下に音符を置くだけでは判別できないため、Codetta専用の**伸縮囲み**を使います。囲みには「倍率を適用する」か「逆数倍率を適用する」かを示す記号を付けます。
-
-制御声部に`2`だけでなく`1 + 1`などのフレーズも置けるので、演算対象を定数に限定せずに済みます。
-
-### 和音：v0.1では演算に割り当てない
-
-和音の音数を数値や加算として使うと、音価による数値表現と競合します。また、同時に鳴る音の長さは、そのまま足し算にはなりません。
-
-そのため、v0.1では**計算声部は単音に限定し、和音の意味論は保留**するのがよいです。
-
-将来、複数の値や並行処理を導入するときに、和音や対等な複数声部との対応を検討できます。最初から楽譜の全要素に役割を与える必要はありません。
-
-### 音高・強弱・テンポ：演奏表現
-
-v0.1では、音高や強弱を変えても計算結果は変わりません。
-
-Conductorは、構造を聴き分けやすい音高や音色を選べます。数値の符号や命令を、特定の音高に依存させない設計です。
-
-## 3. 追加する記号と構造
-
-以下の名称は仕様上の仮称です。具体的な字形は後で決められます。
-
-| 要素 | 表すもの |
-|---|---|
-| 数値囲み | 内部の音価を一つの数値として読む範囲 |
-| フレーズ囲み | 複数の部分式をまとめる範囲 |
-| 反転記号 | 囲んだフレーズの計算上の符号を反転する |
-| 伸縮囲み | 主声部と制御声部を組にして倍率を適用する |
-| 逆伸縮囲み | 制御声部の値の逆数を倍率にする |
-| ゼロ記号 | 長さを持たない値0 |
-| 出力終止線 | 最上位フレーズの値を表示する |
-
-減算は、後ろのフレーズに反転記号を付けて連結します。
-
-`3 - 5`なら、3拍のフレーズと、負の寄与として指定された5拍のフレーズです。結果は−2ですが、演奏は時間を逆行しません。
-
-ゼロを休符にすると、休符の長さと値0が衝突します。そのためゼロは専用の無音価記号にします。v0.1では、計算囲み内の休符は許可しない方が仕様を小さく保てます。
-
-## 4. AST
-
-入力式のASTは、通常の算術式の構造をそのまま表します。
-
-| ノード | 内容 |
-|---|---|
-| Integer | 整数リテラル |
-| Negate | 単項マイナス |
-| Add | 加算 |
-| Subtract | 減算 |
-| Multiply | 乗算 |
-| Divide | 除算 |
-| Output | 結果の出力 |
-
-優先順位は一般的な算術式と同じです。乗除算が加減算より優先され、同じ優先順位では左結合とします。
-
-括弧は独立した演算ノードにせず、木の形に反映します。
-
-`(3 + 5) * 2`のASTは次の形です。
-
-```text
-Output
-└─ Multiply
-   ├─ Add
-   │  ├─ Integer(3)
-   │  └─ Integer(5)
-   └─ Integer(2)
-```
-
-## 5. Codettaの中間表現
-
-ASTから、音楽的な構造を表す中間表現へ変換します。
-
-| IRノード | 意味 |
-|---|---|
-| Span(n) | n基準拍の数値フレーズ。nは正の整数 |
-| Zero | 値0 |
-| Sequence(children) | 子フレーズを順に連結し、値を合計する |
-| Invert(body) | 子フレーズの値の符号を反転する |
-| Scale(body, factor) | 制御フレーズの値で主フレーズを伸縮する |
-| Unscale(body, factor) | 制御フレーズの値の逆数で伸縮する |
-| Emit(body) | 子フレーズを評価して結果を出力する |
-
-変換規則は次のとおりです。
-
-| AST | Codetta IR |
-|---|---|
-| `a + b` | `Sequence(a, b)` |
-| `a - b` | `Sequence(a, Invert(b))` |
-| `a * b` | `Scale(a, b)` |
-| `a / b` | `Unscale(a, b)` |
-
-各IRノードの値を \(V\) とすると、意味は以下で完全に定義できます。
-
-\[
-\begin{aligned}
-V(\mathrm{Span}(n)) &= n\\
-V(\mathrm{Zero}) &= 0\\
-V(\mathrm{Sequence}(x_1,\ldots,x_k)) &= \sum_i V(x_i)\\
-V(\mathrm{Invert}(x)) &= -V(x)\\
-V(\mathrm{Scale}(x,f)) &= V(x)V(f)\\
-V(\mathrm{Unscale}(x,f)) &= V(x)/V(f)
-\end{aligned}
-\]
-
-最後の規則は \(V(f)\neq0\) の場合に限ります。
-
-例のIRは次の形です。
-
-```text
-Emit
-└─ Scale
-   ├─ body: Sequence
-   │  ├─ Span(3)
-   │  └─ Span(5)
-   └─ factor: Span(2)
-```
-
-このIRとは別に、音符、タイ、囲み、声部、配置などを持つ**楽譜モデル**を設けます。改行や音高の選択は楽譜モデルの仕事であり、計算の意味はIRに集約します。
-
-## 6. `(3 + 5) * 2`の楽譜と実行
-
-概念上の楽譜は次の構造です。下図の文字は説明用で、実際の数値は音価から読み取ります。
-
-```text
-┌──────────── 伸縮囲み ────────────┐
-│ 主声部   ┌──── フレーズ ────┐   │
-│          │ [3拍] → [5拍]    │   │
-│          └─────────────────┘   │
-│ 制御声部   [2拍]                │
-└────────────────────────────────┘
-                         出力終止線
-```
-
-Performerは楽譜から次の構造を復元します。
-
-1. 主声部の二つの数値囲みを、3と5として読む。
-2. 横方向の連結から、主声部の値8を得る。
-3. 制御声部から倍率2を得る。
-4. 伸縮囲みに従って8を2倍する。
-5. 出力終止線で16を表示する。
-
-**Conductorが16を先に計算し、16拍の音符に置き換えることはしません。** v0.1では式の構造を維持し、楽譜を読み直して計算できることを優先します。
-
-### 再生の規則
-
-記譜上の音価と、実際に演奏する音価を分けます。
-
-この例では、Performerは制御フレーズの値2を求め、主声部の3拍・5拍を6拍・10拍として再生します。元の楽譜には3拍・5拍のまま記録し、再読込時に倍率が二重に掛からないようにします。
-
-一般の式では制御声部自体も計算が必要なので、v0.1の演奏順は次を推奨します。
-
-- 制御声部を先に評価・再生する。
-- 得られた倍率を使って主声部を再生する。
-- 囲みの終了時に、その値を確定する。
-
-縦配置は、この場合は同時発音ではなく**制御関係**を表します。通常の総譜とは異なるため、専用の囲みと声部ラベルで明示します。
-
-負の値は正の長さで再生し、反転記号を画面上で強調します。倍率0なら主声部の音を省略して値0を確定します。したがって、演奏だけから全意味を復元することはv0.1の要件に含めません。
-
-## 7. ConductorとPerformerの責務
-
-| 構成要素 | 責務 |
-|---|---|
-| **Codetta** | 数値体系、楽譜の文法、IR、評価規則、不正な楽譜と実行エラーを定義する |
-| **Conductor** | 式を構文解析し、ASTからIR、IRから楽譜へ変換する |
-| **Performer** | 楽譜を解析・検証し、IRを復元して評価・再生し、結果を表示する |
-
-Conductorは、音価の分割、タイ、音高、配置、改行を決めます。
-
-Performerは、声部の役割や囲みの対応を検証し、正確な有理数演算を行います。ゼロ除算などは、原因の囲みを指して報告できるようにします。
-
-Performerが元の入力式やConductorのASTを受け取る必要はありません。
-
-## 8. 「楽譜を読み直す」の範囲
-
-v0.1では、**記号構造を保存した電子楽譜を読む**ことを対象にするのが現実的です。PNGやPDFからの画像認識は別機能にします。
-
-電子楽譜には、音符の音価、タイ、囲み、声部の役割などを保存します。その内容をすべて表示し、隠しフィールドの元式や計算結果に依存しない設計にします。
-
-満たすべき条件は次です。
-
-> Conductorが出力した楽譜だけから、Performerが同じ意味のIRを復元できる。
-
-最初の完成条件は、`(3 + 5) * 2`をコンパイルして楽譜ファイルへ保存し、元の式を使わずに別途読み込み、演奏とともに16を得ることです。
-
-この設計で特に筋が通るのは、**加算を時間の連結、乗除算を時間の伸縮として統一できる点**です。減算・ゼロ・制御関係には専用記号を使い、その拡張部分まで含めてCodettaの楽譜文法として明確に定義します。
-
-## 9. v0.1の実装仕様（既存の実行用形式）
-
-### 保存形式
-
-Codetta SVG v0.1を電子楽譜の形式とします。通常のSVGとして表示でき、SVG要素の入れ子がフレーズの範囲を表します。PerformerはConductorをインポートせず、楽譜ファイルだけを読みます。
-
-- ルートはSVG名前空間の`svg`で、`data-codetta-version="0.1"`を持ちます。
-- 音楽的な囲みは`g`要素の`data-codetta`属性で識別します。値は`emit`、`span`、`zero`、`sequence`、`invert`、`scale`、`unscale`です。囲みには対応するラベルが表示されます。
-- `emit`は最上位に一つだけ置き、一つの部分式を含みます。`invert`も一つの部分式を含みます。
-- `sequence`は二つ以上の部分式を含み、XML上の順序と横方向の表示順序が一致します。
-- `scale`と`unscale`は二つの`g data-codetta="voice"`を含みます。`data-role="body"`と`data-role="control"`が一つずつ必要です。それぞれ一つの部分式を持ち、主声部が上、制御声部が下に表示されます。
-- `span`の中には`g data-codetta="note"`と`path data-codetta="tie"`を、音符・タイ・音符の順で置きます。音符は`use href="#note-quarter"`などの実際に表示される音符記号を参照します。`quarter`、`half`、`dotted-half`、`whole`がそれぞれ1、2、3、4単位です。
-- タイで結ばれた音符は同一のMIDI音高を`data-pitch`に持ちます。初期出力はC4（60）です。音高はIRの演奏用注記として保持され、計算に影響しません。
-- `zero`は子フレーズを持たず、長さ0の専用記号として表示されます。
-- 音符記号の定義は共通の`notation.py`にあり、Performerはその定義と楽譜構造を検証します。
-
-元の入力式、ASTのダンプ、計算済みの答え、数値リテラルの隠し値は保存しません。たとえば付点二分音符の`use`参照を二分音符へ変更すると、表示と読み取る値がどちらも3から2に変わります。説明用テキストや図形の座標は計算には使いません。
-
-この形式は構造を持った電子楽譜です。任意のSVG、画像、MIDI、MusicXMLの読み取りには対応していません。一般的な画像編集ソフトが独自属性や音符定義を変更・削除した場合は読み込めません。
-
-### 演奏と評価
-
-Performerは最初に楽譜全体を検証・評価し、ゼロ除算があれば再生前に報告します。その後に演奏し、終わってから結果を表示します。GUIによる楽譜のアニメーションは未実装です。`--trace`では各フレーズの開始時に声部・符号・演奏音価・囲みの位置をコンソールに表示します。
-
-制御声部は先に演奏し、その値の絶対値で主声部の音価を伸縮します。除算では逆数を使います。負の符号は計算とトレースに保持し、音声の長さは非負です。倍率0の主声部は演奏しませんが、内部のゼロ除算などを評価から除外することはありません。
-
-入れ子の伸縮では、外側の倍率が内側のフレーズ全体（内側の制御声部を含む）の演奏音価に適用されます。制御声部の演奏時間は計算結果には加算されません。
-
-`(3 + 5) * 2`の演奏順は2拍の制御声部、6拍の主フレーズ、10拍の主フレーズです。合計18拍を演奏し、値は16です。120 BPMでWAVの長さは9秒です。ライブ再生ではフレーズごとの音声準備による短い間隔が生じる場合があります。
-
-音声は44.1 kHz・16ビット・モノラルの正弦波です。WAV出力は各OSで利用でき、直接再生はWindowsの`winsound`を使います。計算は`Fraction`による有理数演算で、音声サンプルの時間だけを丸めます。
-
-### 現在の制約
-
-- リテラルは整数、除算結果は有理数です。単項マイナスは対応し、単項プラスは未対応です。
-- 各数値の音価は全音符と残りの音価に分解します。1楽譜は最大4,096音符です。巨大な整数は解析・計算できても、楽譜化の上限を超える場合があります。
-- 自動改行は未実装です。長い式は横長のSVGになり、ブラウザで拡大・スクロールして閲覧します。
-- 音声生成・再生は既定で300秒までです。`--max-seconds`で変更できます。音声なしの評価にはこの上限はありません。
-- 休符、和音、変数、制御構文、一般的な楽曲の読み取りには対応していません。
+MIT License
