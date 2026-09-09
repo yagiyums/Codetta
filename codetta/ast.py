@@ -1,48 +1,57 @@
-"""Syntax tree of the input calculator language (before musical lowering)."""
+"""Semantic syntax tree derived from Codetta notation."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Union
+from dataclasses import dataclass, field
+from typing import TypeAlias
+
+
+@dataclass(frozen=True)
+class SourceRef:
+    event_ids: tuple[str, ...] = ()
+    spanner_ids: tuple[str, ...] = ()
+    measure_id: str | None = None
 
 
 @dataclass(frozen=True)
 class Integer:
     value: int
+    source_ref: SourceRef = field(default_factory=SourceRef, compare=False)
+
+
+@dataclass(frozen=True)
+class Sum:
+    terms: tuple[Expression, ...]
+    source_ref: SourceRef = field(default_factory=SourceRef, compare=False)
+
+
+@dataclass(frozen=True)
+class Product:
+    factors: tuple[Expression, ...]
+    source_ref: SourceRef = field(default_factory=SourceRef, compare=False)
 
 
 @dataclass(frozen=True)
 class Negate:
     body: Expression
+    source_ref: SourceRef = field(default_factory=SourceRef, compare=False)
 
 
 @dataclass(frozen=True)
-class Add:
-    left: Expression
-    right: Expression
-
-
-@dataclass(frozen=True)
-class Subtract:
-    left: Expression
-    right: Expression
-
-
-@dataclass(frozen=True)
-class Multiply:
-    left: Expression
-    right: Expression
-
-
-@dataclass(frozen=True)
-class Divide:
-    left: Expression
-    right: Expression
-
-
-Expression = Union[Integer, Negate, Add, Subtract, Multiply, Divide]
-
-
-@dataclass(frozen=True)
-class Output:
+class Reciprocal:
     body: Expression
+    source_ref: SourceRef = field(default_factory=SourceRef, compare=False)
+
+
+Expression: TypeAlias = Integer | Sum | Product | Negate | Reciprocal
+
+
+@dataclass(frozen=True)
+class Block:
+    expression: Expression
+    source_ref: SourceRef = field(default_factory=SourceRef, compare=False)
+
+
+@dataclass(frozen=True)
+class Program:
+    blocks: tuple[Block, ...]

@@ -1,55 +1,34 @@
-# Calculator example
+# Codetta v0.1 calculator demo
 
-Run from the repository root with Python 3.10 or later.
-
-## View conventional staff notation
-
-Install the optional renderer once:
+Run the complete demo from the repository root with Python 3.10 or later:
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-rendering.txt
+.\.venv\Scripts\python.exe examples\calculator\demo.py
 ```
+
+The demo compiles `(3 + 5) * 2` and creates:
+
+- `program.codetta`: official notation-only Codetta source container
+- `score.musicxml`: exchange file for MuseScore and other notation software
+- `score.svg`: conventional engraved staff notation
+- `score.html`: browser view with optional Debug mode and PDF printing
+- `performance.wav`: the score played with simultaneous voices
+
+It then reloads `program.codetta` through Performer and prints:
+
+```text
+Result: 16
+```
+
+The same flow can be run as separate commands:
 
 ```powershell
-.\.venv\Scripts\python.exe -m conductor --input examples/calculator/expression.txt -o examples/calculator/score.html
+python -m conductor --input examples\calculator\expression.txt -o examples\calculator\program.codetta
+python -m performer examples\calculator\program.codetta --no-play --wav examples\calculator\performance.wav
+python -m rendering examples\calculator\program.codetta -o examples\calculator\score.html
+python -m conductor --input examples\calculator\expression.txt -o examples\calculator\score.musicxml
 ```
 
-Open `score.html` in a browser. Normal mode shows only engraved notation;
-the Debug mode checkbox enables IR annotations. Print / Save PDF exports via
-the browser. `score.svg` and `score.musicxml` are the corresponding display assets.
-
-## Execute the program
-
-Execution uses a separate file and needs no external dependencies.
-
-```powershell
-python -m conductor --input examples/calculator/expression.txt --format executable-svg -o examples/calculator/program.codetta.svg
-python -m performer examples/calculator/program.codetta.svg --no-play
-```
-
-The second command reads only the saved score and prints `16`.
-`program.codetta.svg` retains the legacy executable enclosures. It is not the normal staff view.
-
-To play on Windows and show the active phrase:
-
-```powershell
-python -m performer examples/calculator/program.codetta.svg --trace
-```
-
-The 2-beat control phrase plays first, then the main phrases last 6 and 10 beats.
-At 120 BPM the complete performance contains 18 beats (9 seconds); its value is 16.
-Control phrases are audible but are not added to the result.
-
-To export sound without using an audio device:
-
-```powershell
-python -m performer examples/calculator/program.codetta.svg --no-play --wav examples/calculator/performance.wav
-```
-
-Other expressions to try: `3 - 5`, `3 / 2`, `-(3 + 5)`, `(1 + 2) * (5 - 3)`, `5 * 0`.
-For an expression beginning with `-`, put it after `--`, for example:
-
-```powershell
-python -m conductor --format executable-svg -o negative.codetta.svg -- "-(3 + 5)"
-```
+`program.codetta` contains pitches, durations, voices, rests, ties, slurs, and
+brackets. It does not contain the input expression, AST nodes, operation names,
+or the calculated value `16`.

@@ -1,30 +1,20 @@
-"""Notation choices and a display projection of IR; no program evaluation."""
+"""Read-only display projection of the canonical Codetta Score Model."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from fractions import Fraction
 
-from codetta import ir
+from codetta.score_model import Chord, Note, Rest, Score, validate_score
 from codetta.semantics import CodettaError
 
 
 @dataclass(frozen=True)
 class NotationOptions:
-    beats: int = 4
-    beat_type: int = 4
-    fifths: int = 0
-    clef: str = "treble"
-
-    def __post_init__(self) -> None:
-        if type(self.beats) is not int or not 1 <= self.beats <= 32:
-            raise CodettaError("Time signature numerator must be between 1 and 32")
-        if self.beat_type not in (1, 2, 4, 8, 16, 32):
-            raise CodettaError("Time signature denominator must be 1, 2, 4, 8, 16 or 32")
-        if type(self.fifths) is not int or not -7 <= self.fifths <= 7:
-            raise CodettaError("Key signature fifths must be between -7 and 7")
-        if self.clef not in ("treble", "bass"):
-            raise CodettaError("Clef must be treble or bass")
+    beats: int
+    beat_type: int
+    fifths: int
+    clef: str
 
     @property
     def measure_beats(self) -> Fraction:
@@ -35,19 +25,28 @@ class NotationOptions:
 class DisplayNote:
     start: Fraction
     duration: Fraction
-    pitches: tuple[int, ...]  # Empty means a notated rest; multiple means a chord.
-    staff: int = 1
-    voice: int = 1
-    path: str = ""
+    pitches: tuple[int, ...]
+    staff: int
+    voice: int
+    event_id: str
+    tie_start: bool = False
+    tie_stop: bool = False
+    spellings: tuple[tuple[str, int, int], ...] = ()
+    accidental: str | None = None
+    stem: str | None = None
 
 
 @dataclass(frozen=True)
 class Scope:
     kind: str
+    line_style: str
     start: Fraction
     end: Fraction
-    staff: int
-    path: str
+    top_staff: int
+    bottom_staff: int
+    identifier: str
+    start_anchor: str
+    end_anchor: str
     depth: int
 
 
@@ -58,44 +57,60 @@ class DisplayScore:
     staves: int
     duration: Fraction
     options: NotationOptions
+    title: str
 
-
-def project(program: ir.Emit, options: NotationOptions | None = None) -> DisplayScore:
-    """Keep written durations; place control expressions on additional staves."""
-    if not isinstance(program, ir.Emit):
-        raise CodettaError("A displayed program needs one top-level Emit")
-    options = options or NotationOptions()
-    notes: list[DisplayNote] = []
-    scopes: list[Scope] = []
-    staves = 1
-
-    def walk(node: ir.Phrase, start: Fraction, staff: int, path: str, depth: int) -> Fraction:
-        nonlocal staves
-        if depth > 64:
-            raise CodettaError("Notation supports up to 64 nested phrases")
-        if isinstance(node, ir.Span):
-            notes.append(DisplayNote(start, Fraction(node.beats), (node.pitch,), staff, path=path))
-            end = start + node.beats
-        elif isinstance(node, ir.Zero):
-            end = start
-        elif isinstance(node, ir.Sequence):
-            end = start
-            for i, child in enumerate(node.children, 1):
-                end = walk(child, end, staff, f"{path}/phrase[{i}]", depth + 1)
-        elif isinstance(node, ir.Invert):
-            end = walk(node.body, start, staff, path + "/invert", depth + 1)
-        elif isinstance(node, (ir.Scale, ir.Unscale)):
-            staves += 1
-            if staves > 32:
-                raise CodettaError("Notation supports up to 32 staves")
-            control_staff = staves
-            body_end = walk(node.body, start, staff, path + "/body", depth + 1)
-            control_end = walk(node.factor, start, control_staff, path + "/control", depth + 1)
-            end = max(body_end, control_end)
-        else:
-            raise TypeError(f"Unsupported IR node: {type(node).__name__}")
-        scopes.append(Scope(type(node).__name__, start, end, staff, path, depth))
-        return end
-
-    duration = walk(program.body, Fraction(0), 1, "output", 0)
-    return DisplayScore(tuple(notes), tuple(scopes), staves, duration, options)
+def from_score(score: Score) -> DisplayScore:
+    """Project notation without parsing or evaluating its programming meaning."""
+    validate_score(score)
+    part = score.parts[0]
+    first = part.staves[0].measures[0]
+    for staff in part.staves:
+        for measure in staff.measures:
+            if measure.time_signature != first.time_signature:
+                raise CodettaError("Rendering v0.1 requires one time signature throughout the score")
+    measure_beats = first.duration * 4
+    tied_from = {spanner.start_anchor for spanner in score.spanners if spanner.type == "tie"}
+    tied_to = {spanner.end_anchor for spanner in score.spanners if spanner.type == "tie"}
+    event_positions: dict[str, tuple[Fraction, Fraction, int]] = {}
+    notes = []
+    for staff_number, staff in enumerate(part.staves, 1):
+        for measure_index, measure in enumerate(staff.measures):
+            offset = measure_beats * measure_index
+            for voice_number, voice in enumerate(measure.voices, 1):
+                for event in voice.events:
+                    start = offset + event.start * 4
+                    duration = event.duration * 4
+                    event_positions[event.id] = (start, start + duration, staff_number)
+                    if isinstance(event, Note):
+                        pitches = (event.pitch.midi,)
+                        spellings = ((event.pitch.step, event.pitch.alter, event.pitch.octave),)
+                        accidental, stem = event.accidental, event.stem
+                    elif isinstance(event, Chord):
+                        pitches = tuple(pitch.midi for pitch in event.pitches)
+                        spellings = tuple((pitch.step, pitch.alter, pitch.octave) for pitch in event.pitches)
+                        accidental, stem = event.accidental, event.stem
+                    elif isinstance(event, Rest):
+                        pitches = ()
+                        spellings = ()
+                        accidental = stem = None
+                    else:
+                        raise TypeError(f"Unsupported event {type(event).__name__}")
+                    notes.append(DisplayNote(start, duration, pitches, staff_number, voice_number,
+                                             event.id, event.id in tied_from, event.id in tied_to,
+                                             spellings, accidental, stem))
+    scopes = []
+    for spanner in score.spanners:
+        if spanner.type == "tie":
+            continue
+        start = event_positions[spanner.start_anchor]
+        end = event_positions[spanner.end_anchor]
+        top, bottom = spanner.staff_range or (min(start[2], end[2]), max(start[2], end[2]))
+        scopes.append(Scope(spanner.type, spanner.line_style, min(start[0], end[0]),
+                            max(start[1], end[1]), top, bottom, spanner.id,
+                            spanner.start_anchor, spanner.end_anchor, spanner.nesting_level))
+    duration = measure_beats * len(part.staves[0].measures)
+    options = NotationOptions(first.time_signature.beats, first.time_signature.beat_type,
+                              first.key_signature.fifths,
+                              "treble" if first.clef.sign == "G" else "bass")
+    return DisplayScore(tuple(notes), tuple(scopes), len(part.staves), duration, options,
+                        score.metadata.get("title", "Codetta"))

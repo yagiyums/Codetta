@@ -1,4 +1,4 @@
-"""Export display notation as standard, uncompressed MusicXML 4.0."""
+"""Export Codetta Score Model notation as standard MusicXML 4.0."""
 
 from __future__ import annotations
 
@@ -8,9 +8,9 @@ from math import ceil
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
-from codetta import ir
+from codetta.score_model import Score
 from codetta.semantics import CodettaError
-from rendering.model import DisplayNote, DisplayScore, NotationOptions, project
+from rendering.model import DisplayNote, DisplayScore, from_score
 
 DIVISIONS = 8
 MAX_MEASURES = 1024
@@ -22,7 +22,7 @@ DURATIONS = ((Fraction(4), "whole", False), (Fraction(3), "half", True),
 
 
 def _el(parent: ET.Element, tag: str, value: object | None = None, **attrs: object) -> ET.Element:
-    child = ET.SubElement(parent, tag, {k.replace("_", "-"): str(v) for k, v in attrs.items()})
+    child = ET.SubElement(parent, tag, {key.replace("_", "-"): str(item) for key, item in attrs.items()})
     if value is not None:
         child.text = str(value)
     return child
@@ -31,7 +31,7 @@ def _el(parent: ET.Element, tag: str, value: object | None = None, **attrs: obje
 def _ticks(beats: Fraction) -> int:
     ticks = beats * DIVISIONS
     if ticks.denominator != 1:
-        raise CodettaError("IR notation export supports durations in multiples of 1/8 quarter note")
+        raise CodettaError("MusicXML export supports durations in multiples of 1/8 quarter note")
     return ticks.numerator
 
 
@@ -48,25 +48,19 @@ class _Piece:
 
 def _pieces(score: DisplayScore, measures: int) -> list[_Piece]:
     capacity = score.options.measure_beats
-    lanes = {(note.staff, note.voice) for note in score.notes}
+    lanes = {(event.staff, event.voice) for event in score.notes}
     lanes.update((staff, 1) for staff in range(1, score.staves + 1))
-    result: list[_Piece] = []
+    pieces: list[_Piece] = []
     for staff, voice in sorted(lanes):
-        events = sorted((n for n in score.notes if (n.staff, n.voice) == (staff, voice)),
-                        key=lambda n: n.start)
+        events = sorted((event for event in score.notes if (event.staff, event.voice) == (staff, voice)),
+                        key=lambda event: (event.start, event.event_id))
         previous_end = Fraction(0)
         for event in events:
             if event.duration <= 0 or event.start < previous_end:
                 raise CodettaError("Notes in one voice must have positive durations and may not overlap")
-            if any(type(p) is not int or not 12 <= p <= 127 for p in event.pitches):
-                raise CodettaError("MusicXML pitch export supports MIDI pitches 12 through 127")
-            _ticks(event.start)
-            _ticks(event.duration)
             previous_end = event.start + event.duration
-            if previous_end > score.duration:
-                raise CodettaError("A note extends beyond the display score")
         for measure_index in range(measures):
-            begin, end = measure_index * capacity, (measure_index + 1) * capacity
+            begin, end = capacity * measure_index, capacity * (measure_index + 1)
             cursor = begin
             segments: list[tuple[DisplayNote, Fraction, Fraction]] = []
             for event in events:
@@ -74,27 +68,28 @@ def _pieces(score: DisplayScore, measures: int) -> list[_Piece]:
                     continue
                 first, last = max(event.start, begin), min(event.start + event.duration, end)
                 if first > cursor:
-                    segments.append((DisplayNote(cursor, first - cursor, (), staff, voice), cursor, first))
+                    segments.append((DisplayNote(cursor, first - cursor, (), staff, voice,
+                                                 f"padding-{staff}-{voice}-{cursor}"), cursor, first))
                 segments.append((event, first, last))
                 cursor = last
             if cursor < end:
-                segments.append((DisplayNote(cursor, end - cursor, (), staff, voice), cursor, end))
+                segments.append((DisplayNote(cursor, end - cursor, (), staff, voice,
+                                             f"padding-{staff}-{voice}-{cursor}"), cursor, end))
             index = 0
-            for event, cursor, end in segments:
-                while cursor < end:
-                    remaining = end - cursor
-                    for duration, note_type, dotted in DURATIONS:
-                        if duration <= remaining:
-                            break
-                    else:
-                        raise CodettaError("Cannot spell this duration with the supported note values")
+            for event, cursor, segment_end in segments:
+                while cursor < segment_end:
+                    remaining = segment_end - cursor
+                    spelling = next((item for item in DURATIONS if item[0] <= remaining), None)
+                    if spelling is None:
+                        raise CodettaError("Cannot spell a score duration with supported note values")
+                    duration, note_type, dotted = spelling
                     index += 1
-                    result.append(_Piece(event, cursor, duration, note_type, dotted, measure_index,
+                    pieces.append(_Piece(event, cursor, duration, note_type, dotted, measure_index,
                                          f"n-s{staff}-v{voice}-m{measure_index + 1}-{index}"))
-                    if len(result) > 16384:
-                        raise CodettaError("Notation exceeds 16,384 note/rest fragments")
+                    if len(pieces) > 16_384:
+                        raise CodettaError("Notation exceeds 16,384 note and rest fragments")
                     cursor += duration
-    return result
+    return pieces
 
 
 def _pitch(midi: int, fifths: int) -> tuple[str, int, int]:
@@ -106,78 +101,68 @@ def _pitch(midi: int, fifths: int) -> tuple[str, int, int]:
     return step, alter, midi // 12 - 1
 
 
-def _scope_marks(score: DisplayScore, pieces: list[_Piece], *, debug: bool):
+def _marks(score: DisplayScore, pieces: list[_Piece], *, debug: bool):
     directions: list[tuple[Fraction, int, str, dict[str, object]]] = []
     slurs: dict[str, list[dict[str, object]]] = {}
-    active: dict[tuple[int, str], list[tuple[Fraction, int]]] = {}
-    sequence_paths = {scope.path for scope in score.scopes if scope.kind == "Sequence"}
-    for scope in sorted(score.scopes, key=lambda s: (s.start, -s.end, s.depth)):
+    by_event: dict[str, list[_Piece]] = {}
+    for piece in pieces:
+        by_event.setdefault(piece.event.event_id, []).append(piece)
+    for event in score.notes:
+        if debug and event.pitches:
+            directions.append((event.start, event.staff, "words",
+                               {"text": f"value duration={event.duration}", "font_size": 8,
+                                "default_y": 55}))
+    for scope in sorted(score.scopes, key=lambda item: (item.start, -item.end, item.depth)):
+        label = {("slur", "solid"): "Sum", ("bracket", "solid"): "Product",
+                 ("slur", "dashed"): "Negate", ("bracket", "dashed"): "Reciprocal"}[
+                    (scope.kind, scope.line_style)]
         if debug:
-            label = f"Span={scope.end - scope.start}" if scope.kind == "Span" else scope.kind
-            directions.append((scope.start, scope.staff, "words",
-                               {"text": label, "font_size": 8, "default_y": 55 + scope.depth * 22}))
-        if scope.kind == "Zero":
-            directions.append((scope.start, scope.staff, "coda", {}))
-        if scope.kind not in ("Sequence", "Scale", "Unscale", "Invert") or scope.start == scope.end:
-            continue
-        # Associative chains of additions form one musical phrase. Keep every
-        # original scope in Debug mode without stacking redundant nested slurs.
-        if scope.kind == "Sequence" and scope.path.rsplit("/phrase[", 1)[0] in sequence_paths and "/phrase[" in scope.path:
-            continue
-        category = "slur" if scope.kind == "Sequence" else "bracket"
-        target = [p for p in pieces if p.event.staff == scope.staff and p.event.pitches
-                  and (p.event.path == scope.path or p.event.path.startswith(scope.path + "/"))]
-        target.sort(key=lambda p: p.start)
-        if category == "slur" and len(target) < 2:
-            continue
-        key = (scope.staff, category)
-        occupied = [(end, number) for end, number in active.get(key, []) if end > scope.start]
-        available = set(range(1, 17)) - {number for _, number in occupied}
-        if not available:
-            raise CodettaError("More than 16 overlapping notation scopes on one staff")
-        number = min(available)
-        active[key] = occupied + [(scope.end, number)]
-        if category == "slur":
-            slurs.setdefault(target[0].identifier, []).append({"type": "start", "number": number,
-                                                              "placement": "above"})
-            slurs.setdefault(target[-1].identifier, []).insert(0, {"type": "stop", "number": number})
+            directions.append((scope.start, scope.top_staff, "words",
+                               {"text": label, "font_size": 8,
+                                "default_y": 75 + scope.depth * 18}))
+        starts = sorted(by_event.get(scope.start_anchor, ()), key=lambda piece: piece.start)
+        ends = sorted(by_event.get(scope.end_anchor, ()), key=lambda piece: piece.start)
+        if not starts or not ends:
+            raise CodettaError(f"Cannot locate spanner anchors for {scope.identifier}")
+        first, last = starts[0], ends[-1]
+        if scope.kind == "slur" and first.identifier != last.identifier:
+            number = scope.depth % 16 + 1
+            slurs.setdefault(first.identifier, []).append({"type": "start", "number": number,
+                                                          "placement": "above",
+                                                          "line_type": scope.line_style})
+            slurs.setdefault(last.identifier, []).insert(0, {"type": "stop", "number": number})
         else:
-            attrs = {"number": number, "line_type": "dashed" if scope.kind == "Unscale" else "solid",
-                     "line_end": "up" if scope.kind == "Invert" else "down",
-                     "placement": "below" if scope.kind == "Invert" else "above",
-                     "default_y": -75 - scope.depth * 10 if scope.kind == "Invert" else 25 + scope.depth * 10}
-            directions.append((scope.start, scope.staff, "bracket", dict(attrs, type="start")))
-            directions.append((scope.end, scope.staff, "bracket", dict(attrs, type="stop")))
+            attributes = {"number": scope.depth % 16 + 1, "line_type": scope.line_style,
+                          "line_end": "none" if scope.kind == "slur" else "down",
+                          "placement": "below" if scope.line_style == "dashed" else "above",
+                          "default_y": -70 - scope.depth * 10 if scope.line_style == "dashed"
+                          else 25 + scope.depth * 10}
+            directions.append((scope.start, scope.top_staff, "bracket", dict(attributes, type="start")))
+            directions.append((scope.end, scope.top_staff, "bracket", dict(attributes, type="stop")))
     return directions, slurs
 
 
-def score_to_musicxml(score: DisplayScore, *, debug: bool = False) -> str:
-    if not 1 <= score.staves <= 32 or score.duration < 0:
-        raise CodettaError("Invalid display score extent")
-    for note in score.notes:
-        if not 1 <= note.staff <= score.staves or not 1 <= note.voice <= 4:
-            raise CodettaError("Notation needs a valid staff and a voice between 1 and 4")
+def display_to_musicxml(score: DisplayScore, *, debug: bool = False) -> str:
     capacity = score.options.measure_beats
     measures = max(1, ceil(score.duration / capacity))
     if measures > MAX_MEASURES:
         raise CodettaError(f"Notation exceeds {MAX_MEASURES} measures")
     pieces = _pieces(score, measures)
-    directions, slurs = _scope_marks(score, pieces, debug=debug)
+    directions, slurs = _marks(score, pieces, debug=debug)
     root = ET.Element("score-partwise", {"version": "4.0"})
+    if score.title:
+        _el(_el(root, "work"), "work-title", score.title)
     encoding = _el(_el(root, "identification"), "encoding")
     _el(encoding, "software", "Codetta")
-    scaling = _el(_el(root, "defaults"), "scaling")
-    _el(scaling, "millimeters", 7)
-    _el(scaling, "tenths", 40)
     part_list = _el(root, "part-list")
     score_part = _el(part_list, "score-part", id="P1")
     _el(score_part, "part-name", "")
     part = _el(root, "part", id="P1")
     key_alters = {step: (1 if score.options.fifths > 0 else -1)
                   for step in ("FCGDAEB" if score.options.fifths > 0 else "BEADGCF")[:abs(score.options.fifths)]}
-    for index in range(measures):
-        measure = _el(part, "measure", number=index + 1)
-        if index == 0:
+    for measure_index in range(measures):
+        measure = _el(part, "measure", number=measure_index + 1)
+        if measure_index == 0:
             attributes = _el(measure, "attributes")
             _el(attributes, "divisions", DIVISIONS)
             _el(_el(attributes, "key"), "fifths", score.options.fifths)
@@ -192,88 +177,97 @@ def score_to_musicxml(score: DisplayScore, *, debug: bool = False) -> str:
                 _el(clef, "sign", "G" if score.options.clef == "treble" else "F")
                 _el(clef, "line", 2 if score.options.clef == "treble" else 4)
         for when, staff, kind, attributes in directions:
-            # End markers exactly on a barline belong to the preceding measure.
             is_stop = attributes.get("type") == "stop"
             owner = max(0, ceil(when / capacity) - 1) if is_stop else int(when // capacity)
             owner = min(owner, measures - 1)
-            if owner != index:
+            if owner != measure_index:
                 continue
             attributes = dict(attributes)
             placement = str(attributes.pop("placement", "above"))
             direction = _el(measure, "direction", placement=placement)
-            dtype = _el(direction, "direction-type")
+            direction_type = _el(direction, "direction-type")
             text = attributes.pop("text", None)
-            _el(dtype, kind, text, **attributes)
-            _el(direction, "offset", _ticks(when - index * capacity))
+            _el(direction_type, kind, text, **attributes)
+            _el(direction, "offset", _ticks(when - measure_index * capacity))
             _el(direction, "staff", staff)
-        lanes = sorted({(p.event.staff, p.event.voice) for p in pieces if p.measure == index})
+        lanes = sorted({(piece.event.staff, piece.event.voice) for piece in pieces
+                        if piece.measure == measure_index})
         accidental_state: dict[tuple[int, str, int], int] = {}
         accidentals: dict[tuple[str, int], str] = {}
-        # MusicXML serializes complete voices with backups; accidental state
-        # must instead follow musical time across all voices on each staff.
-        for piece in sorted((p for p in pieces if p.measure == index),
-                            key=lambda p: (p.start, p.event.staff, p.event.voice)):
+        for piece in sorted((piece for piece in pieces if piece.measure == measure_index),
+                            key=lambda item: (item.start, item.event.staff, item.event.voice)):
             for chord_index, midi in enumerate(piece.event.pitches):
-                step, alter, octave = _pitch(midi, score.options.fifths)
-                state_key = (piece.event.staff, step, octave)
-                prior = accidental_state.get(state_key, key_alters.get(step, 0))
-                if prior != alter and piece.start == piece.event.start:
-                    accidentals[(piece.identifier, chord_index)] = {-1: "flat", 0: "natural", 1: "sharp"}[alter]
-                accidental_state[state_key] = alter
+                step, alter, octave = (piece.event.spellings[chord_index]
+                                       if piece.event.spellings else _pitch(midi, score.options.fifths))
+                key = (piece.event.staff, step, octave)
+                previous = accidental_state.get(key, key_alters.get(step, 0))
+                if previous != alter and piece.start == piece.event.start:
+                    accidentals[(piece.identifier, chord_index)] = {
+                        -2: "flat-flat", -1: "flat", 0: "natural", 1: "sharp", 2: "double-sharp"
+                    }[alter]
+                accidental_state[key] = alter
         for lane_index, (staff, voice) in enumerate(lanes):
             if lane_index:
                 _el(_el(measure, "backup"), "duration", _ticks(capacity))
-            for piece in (p for p in pieces if p.measure == index and (p.event.staff, p.event.voice) == (staff, voice)):
+            lane_pieces = (piece for piece in pieces if piece.measure == measure_index
+                           and (piece.event.staff, piece.event.voice) == (staff, voice))
+            for piece in lane_pieces:
                 event = piece.event
-                tie_stop = bool(event.pitches) and piece.start > event.start
-                tie_start = bool(event.pitches) and piece.start + piece.duration < event.start + event.duration
+                split_stop = piece.start > event.start
+                split_start = piece.start + piece.duration < event.start + event.duration
+                tie_stop = bool(event.pitches) and (split_stop or (piece.start == event.start and event.tie_stop))
+                tie_start = bool(event.pitches) and (split_start or (
+                    piece.start + piece.duration == event.start + event.duration and event.tie_start))
                 for chord_index, midi in enumerate(event.pitches or (None,)):
                     note = _el(measure, "note", id=piece.identifier + (f"-ch{chord_index}" if chord_index else ""))
                     if chord_index:
                         _el(note, "chord")
-                    accidental = accidentals.get((piece.identifier, chord_index))
                     if midi is None:
                         _el(note, "rest")
                     else:
-                        step, alter, octave = _pitch(midi, score.options.fifths)
+                        step, alter, octave = (event.spellings[chord_index]
+                                               if event.spellings else _pitch(midi, score.options.fifths))
                         pitch = _el(note, "pitch")
                         _el(pitch, "step", step)
                         if alter:
                             _el(pitch, "alter", alter)
                         _el(pitch, "octave", octave)
                     _el(note, "duration", _ticks(piece.duration))
-                    for tied, kind in ((tie_stop, "stop"), (tie_start, "start")):
-                        if tied:
-                            _el(note, "tie", type=kind)
+                    for active, tie_type in ((tie_stop, "stop"), (tie_start, "start")):
+                        if active:
+                            _el(note, "tie", type=tie_type)
                     _el(note, "voice", (staff - 1) * 4 + voice)
                     _el(note, "type", piece.note_type)
                     if piece.dotted:
                         _el(note, "dot")
+                    accidental = event.accidental or accidentals.get((piece.identifier, chord_index))
                     if accidental:
                         _el(note, "accidental", accidental)
+                    if event.stem:
+                        _el(note, "stem", event.stem)
                     _el(note, "staff", staff)
                     marks = slurs.get(piece.identifier, []) if chord_index == 0 else []
                     if tie_start or tie_stop or marks:
                         notations = _el(note, "notations")
-                        for tied, kind in ((tie_stop, "stop"), (tie_start, "start")):
-                            if tied:
-                                _el(notations, "tied", type=kind)
+                        for active, tie_type in ((tie_stop, "stop"), (tie_start, "start")):
+                            if active:
+                                _el(notations, "tied", type=tie_type)
                         for mark in marks:
-                            _el(notations, "slur", **mark)
-        if index == measures - 1:
+                            mark = dict(mark)
+                            placement = mark.pop("placement", None)
+                            _el(notations, "slur", **mark, **({"placement": placement} if placement else {}))
+        if measure_index == measures - 1:
             _el(_el(measure, "barline", location="right"), "bar-style", "light-heavy")
     ET.indent(root)
     return ET.tostring(root, encoding="unicode", xml_declaration=True)
 
 
-def to_musicxml(program: ir.Emit, options: NotationOptions | None = None, *, debug: bool = False) -> str:
-    return score_to_musicxml(project(program, options), debug=debug)
+def to_musicxml(score: Score, *, debug: bool = False) -> str:
+    return display_to_musicxml(from_score(score), debug=debug)
 
 
-def write_musicxml(program: ir.Emit, path: str | Path, options: NotationOptions | None = None,
-                   *, debug: bool = False) -> Path:
-    xml = to_musicxml(program, options, debug=debug)
+def write_musicxml(score: Score, path: str | Path, *, debug: bool = False) -> Path:
     destination = Path(path)
     destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text(xml, encoding="utf-8")
+    destination.write_text(to_musicxml(score, debug=debug), encoding="utf-8", newline="\n")
     return destination

@@ -1,4 +1,4 @@
-"""Recursive descent parser; never executes the source as Python."""
+"""Parser for the v0.1 arithmetic source accepted by Conductor."""
 
 from codetta import ast
 from codetta.semantics import CodettaError
@@ -23,22 +23,32 @@ class _Parser:
         column = self.pos - self.source.rfind("\n", 0, self.pos)
         return ParseError(f"{message} at line {line}, column {column}")
 
+    @staticmethod
+    def add(left: ast.Expression, right: ast.Expression) -> ast.Sum:
+        terms = left.terms + (right,) if isinstance(left, ast.Sum) else (left, right)
+        return ast.Sum(terms)
+
+    @staticmethod
+    def multiply(left: ast.Expression, right: ast.Expression) -> ast.Product:
+        factors = left.factors + (right,) if isinstance(left, ast.Product) else (left, right)
+        return ast.Product(factors)
+
     def expression(self) -> ast.Expression:
         node = self.term()
         while self.peek() in ("+", "-"):
-            op = self.peek()
+            operator = self.peek()
             self.pos += 1
             right = self.term()
-            node = ast.Add(node, right) if op == "+" else ast.Subtract(node, right)
+            node = self.add(node, right if operator == "+" else ast.Negate(right))
         return node
 
     def term(self) -> ast.Expression:
         node = self.unary()
         while self.peek() in ("*", "/"):
-            op = self.peek()
+            operator = self.peek()
             self.pos += 1
             right = self.unary()
-            node = ast.Multiply(node, right) if op == "*" else ast.Divide(node, right)
+            node = self.multiply(node, right if operator == "*" else ast.Reciprocal(right))
         return node
 
     def unary(self) -> ast.Expression:
@@ -48,17 +58,17 @@ class _Parser:
         return self.primary()
 
     def primary(self) -> ast.Expression:
-        char = self.peek()
-        if char == "(":
+        character = self.peek()
+        if character == "(":
             self.pos += 1
-            node = self.expression()
+            result = self.expression()
             if self.peek() != ")":
                 raise self.error("Expected ')'")
             self.pos += 1
-            return node
-        if char and "0" <= char <= "9":
+            return result
+        if character and character.isascii() and character.isdigit():
             start = self.pos
-            while self.pos < len(self.source) and "0" <= self.source[self.pos] <= "9":
+            while self.pos < len(self.source) and self.source[self.pos].isascii() and self.source[self.pos].isdigit():
                 self.pos += 1
             try:
                 return ast.Integer(int(self.source[start:self.pos]))
@@ -67,12 +77,12 @@ class _Parser:
         raise self.error("Expected an integer, '-' or '('")
 
 
-def parse(source: str) -> ast.Output:
+def parse(source: str) -> ast.Program:
     parser = _Parser(source)
     try:
-        result = parser.expression()
+        expression = parser.expression()
     except RecursionError as exc:
         raise ParseError("Expression nesting is too deep") from exc
     if parser.peek():
         raise parser.error(f"Unexpected character {parser.peek()!r}")
-    return ast.Output(result)
+    return ast.Program((ast.Block(expression),))

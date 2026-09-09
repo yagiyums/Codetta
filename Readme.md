@@ -18,19 +18,18 @@ MusicXML      = 外部楽譜ソフトとの交換形式
 
 ## 開発状況
 
-現在の`develop`ブランチには、数式の解析、旧IR、実行用SVG、MusicXML生成、Verovioによる五線譜表示、四則演算、WAV再生のプロトタイプがあります。
+`develop`ブランチにはComposerを除くCodetta v0.1の実行系を実装しています。
 
-以下に定義する新アーキテクチャへの移行はまだ完了していません。
+- 正式なCodetta Score Modelと`.codetta` JSON Serialization
+- Score ModelからASTを導出するScore Parser / Semantic Analyzer
+- 四則演算をScore Modelへ変換するConductor
+- `.codetta`だけを入力として正確な有理数計算を行うPerformer
+- Score Modelの複数声部を同時再生するWAV / Windows Player
+- Score ModelからMusicXMLを生成するExporter
+- Verovioによる通常五線譜のSVG / HTMLレンダリング
+- `(3 + 5) * 2`を16として実行・表示・再生するcalculator example
 
-- 正式なCodetta Score Model
-- `.codetta`の保存と読込
-- Score ModelからASTへのParser / Semantic Analyzer
-- Score Modelを直接編集するComposer
-- 五線譜とPython / `.codetta` JSONを同期するComposer
-- Score Modelを演奏する新しいPerformer
-- Score ModelとMusicXML間の双方向Adapter
-
-このREADMEの「Codetta v0.1 Language Specification」以降を、今後の正式な実装仕様とします。現在のプロトタイプの実行方法は末尾に記載しています。
+旧実行用SVGと旧IRの互換経路は削除し、Score Model中心の構成へ統一しました。ComposerとMusicXML Importは今後の実装範囲です。
 
 ## Codetta全体の役割
 
@@ -358,9 +357,10 @@ Spanner
   end_anchor
   staff_range
   voice_range
+  nesting_level
 ```
 
-`start`と`duration`は浮動小数点ではなく有理数で保持します。IDはタイやスパナーの参照、Composerの選択、Undo / Redoに使用し、通常画面には表示しません。
+`start`と`duration`は浮動小数点ではなく有理数で保持します。`nesting_level`は同じ範囲を囲む複数のスラーや括弧の内外関係と描画位置を保持します。IDはタイやスパナーの参照、Composerの選択、Undo / Redoに使用し、通常画面には表示しません。
 
 ## `.codetta`保存形式
 
@@ -390,9 +390,11 @@ v0.1ではUTF-8 JSONを使用します。将来、音源やサムネイルなど
                 "time_signature": {"beats": 8, "beat_type": 4},
                 "key_signature": {"fifths": 0},
                 "clef": {"sign": "G", "line": 2},
+                "barline": "light-heavy",
                 "voices": [
                   {
                     "id": "voice-1",
+                    "staff": 1,
                     "events": [
                       {
                         "type": "note",
@@ -423,7 +425,10 @@ v0.1ではUTF-8 JSONを使用します。将来、音源やサムネイルなど
         "id": "group-1",
         "line_style": "solid",
         "start_anchor": "note-1",
-        "end_anchor": "note-2"
+        "end_anchor": "note-2",
+        "staff_range": [1, 1],
+        "voice_range": [1, 1],
+        "nesting_level": 0
       }
     ]
   }
@@ -489,7 +494,16 @@ Performerには二つの独立した入力経路を持たせます。
 
 AST / IRの`source_ref`を使い、実行中のノードに対応する五線譜上の音符やグループをハイライトできます。
 
+```powershell
+python -m performer examples\calculator\program.codetta --no-play
+python -m performer examples\calculator\program.codetta --no-play --wav performance.wav
+```
+
+Playerは各音符の開始位置をScore Modelから直接読みます。同じ開始位置の声部は楽譜どおり同時に鳴ります。
+
 ## Composer
+
+> この章は今後実装するComposerの仕様です。現在のv0.1実装にはComposerを含みません。
 
 ComposerはCodettaの標準ソースコードエディタです。最初の実装はPythonから起動するローカルWebアプリを想定します。
 
@@ -674,20 +688,26 @@ Codetta Score Model
 
 ConductorとComposerが作ったScore Modelは、同じScore ParserとSemantic Analyzerで検証します。
 
+```powershell
+python -m conductor "(3 + 5) * 2" -o program.codetta
+python -m conductor "(3 + 5) * 2" -o score.musicxml
+python -m conductor "(3 + 5) * 2" -o score.html
+```
+
 ## MusicXMLとの境界
 
 MusicXMLは外部交換形式です。
 
 ```text
 Score Model → MusicXML Exporter → MusicXML
-MusicXML → MusicXML Importer → Score Model
+MusicXML → MusicXML Importer → Score Model  （今後実装）
 ```
 
 PerformerはMusicXMLを直接実行しません。MusicXMLをCodettaとして利用する場合は、必ずScore ModelへImportして意味解析します。
 
 音符、休符、和音、音高、音価、臨時記号、声部、五線、小節、拍子、調号、音部記号、タイ、実線・破線のスラーと括弧、終止線をImport / Export対象とします。
 
-一般のMusicXMLをScore Modelへ取り込めますが、一般の楽曲がCodettaプログラムとして有効とは限りません。Import後にSemantic Analyzerで検証し、無効な箇所をComposer上に表示します。
+現在のv0.1実装はScore ModelからMusicXMLへのExportに対応します。Import実装後も、一般の楽曲がCodettaプログラムとして有効とは限りません。Import後にSemantic Analyzerで検証し、無効な箇所をComposer上に表示します。
 
 MuseScoreなどの外部ソフトが声部番号、タイ、破線、スパナー範囲を変更した場合はCodettaとしての意味も変わる可能性があります。
 
@@ -724,7 +744,7 @@ Product
 
 Performerは16を出力します。音楽としては8拍で、上下の声部を同時に再生します。
 
-## 目標ディレクトリ構成
+## v0.1実装ディレクトリ
 
 ```text
 codetta/
@@ -736,33 +756,22 @@ codetta/
 ├── ir.py
 └── semantics.py
 
-composer/
-├── server.py
-├── commands.py
-├── session.py
-├── sync_controller.py
-├── python_projection.py
-└── static/
-
 conductor/
 ├── parser.py
 ├── compiler.py
 ├── score_builder.py
-└── score_reconciler.py
+└── score_writer.py
 
 performer/
+├── score_reader.py
 ├── evaluator.py
 ├── player.py
 └── runtime.py
 
-adapters/
-└── musicxml/
-    ├── importer.py
-    └── exporter.py
-
 rendering/
-├── renderer.py
-└── debug_overlay.py
+├── model.py
+├── musicxml.py
+└── renderer.py
 
 examples/
 ├── calculator/
@@ -773,58 +782,44 @@ tests/
 
 表示層はScore Modelだけを受け取り、評価器を呼びません。各層は相互の内部実装へ依存せず、Score ModelとAST / IRの公開境界を介して接続します。
 
-## 最初のE2E完了条件
+## E2E実装状況
 
-1. Composerを起動できる。
-2. 左に空の通常五線譜、右にPythonペインを表示できる。
-3. 右ペインを`.codetta` JSONへ切り替えられる。
-4. 音符、休符、タイ、声部、グループを編集できる。
-5. `(3 + 5) * 2`を五線譜として作成すると、少し後に`result = (3 + 5) * 2`がPythonへ反映される。
-6. Pythonを`result = (3 + 5) * 3`へ変更すると、検証後に対応する五線譜へ更新される。
-7. JSONで有効な音高や音価を変更すると、検証後に同じ構造の五線譜へ更新される。
-8. 不正なPythonまたはJSONを入力しても、最後の正常な五線譜とScore Modelが維持される。
-9. `.codetta`として保存できる。
-10. 再読込後に同じScore Modelと五線譜を復元できる。
-11. Score ParserがASTを生成できる。
-12. Performerが16を出力できる。
-13. Score Modelの音符を同時声部を含めて再生できる。
-14. MusicXMLへExportできる。
-15. ExportしたMusicXMLをImportし、同じ意味のASTを復元できる。
+- [x] 数式`(3 + 5) * 2`をScore Modelへ変換する。
+- [x] 楽譜構造だけを`.codetta`へ保存し、再読込する。
+- [x] Score Parserが音価、タイ、声部、スラー、括弧からASTを生成する。
+- [x] Performerが正確な有理数で四則演算し、16を出力する。
+- [x] Score Modelの音符を同時声部を含めてWAVまたはWindows音声へ出力する。
+- [x] MusicXMLへExportする。
+- [x] Verovioで通常の五線譜をSVG / HTMLへ描画する。
+- [x] 通常表示から値、演算名、AST、IRを除き、Debug表示だけへ重ねる。
+- [ ] Composerで五線譜、Python、JSONを双方向編集する。
+- [ ] MusicXMLをScore ModelへImportする。
 
 自動テストでは、`.codetta`内に`integer`、`multiply`、計算済みの`16`などが保存されていないことも確認します。音価、タイ、声部、スパナーを変更した場合に、その視覚的変更からASTと結果が変わることを検証します。
 
-## 移行方針
+## v0.1を実行する
 
-1. Score Modelと`.codetta` Serializationを追加する。
-2. Score ModelからASTを作るParser / Semantic Analyzerを実装する。
-3. Conductorを`Text AST → Score Model`へ変更する。
-4. Performerを`.codetta → Score Model → AST / IR`へ変更する。
-5. PlayerをScore Modelのポリフォニック再生へ変更する。
-6. MusicXML生成を`IR → MusicXML`から`Score Model ↔ MusicXML`へ移す。
-7. Python Projectionと既存記譜を保つScore Reconcilerを実装する。
-8. ComposerをScore Modelの標準GUIとして実装し、Python / JSONとの同期を追加する。
-9. 旧実行用SVGを互換機能として非推奨化する。
-
-## 現在のプロトタイプを実行する
-
-以下は新仕様へ移行する前の既存プロトタイプ用コマンドです。`.codetta`とComposerはまだ実装されていません。
+Python 3.10以上を使用します。通常五線譜を描画する場合はVerovioをインストールします。
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements-rendering.txt
 ```
 
-通常の五線譜表示：
+calculator exampleは、`.codetta`、MusicXML、SVG、HTML、WAVを生成し、保存した`.codetta`を再読込して16を出力します。
 
 ```powershell
-.\.venv\Scripts\python.exe -m conductor "(3 + 5) * 2" -o examples/calculator/score.html
+.\.venv\Scripts\python.exe examples\calculator\demo.py
 ```
 
-旧実行用SVGによる評価：
+各段階を別々に実行する場合：
 
 ```powershell
-python -m conductor "(3 + 5) * 2" --format executable-svg -o examples/calculator/program.codetta.svg
-python -m performer examples/calculator/program.codetta.svg --no-play
+python -m conductor "(3 + 5) * 2" -o program.codetta
+python -m performer program.codetta --no-play
+python -m performer program.codetta --no-play --wav performance.wav
+python -m rendering program.codetta -o score.html
+python -m conductor "(3 + 5) * 2" -o score.musicxml
 ```
 
 テスト：
@@ -832,8 +827,6 @@ python -m performer examples/calculator/program.codetta.svg --no-play
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
-
-現在の表示プロトタイプの詳細は[docs/rendering.md](docs/rendering.md)を参照してください。この文書には旧IRからMusicXMLを生成する現在の実装が含まれており、新しいScore Model中心の仕様へ順次更新します。
 
 ## License
 

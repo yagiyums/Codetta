@@ -1,0 +1,205 @@
+{
+  "format": "codetta-score",
+  "format_version": "0.1",
+  "language_version": "0.1",
+  "score": {
+    "metadata": {
+      "title": "Codetta calculator demo"
+    },
+    "parts": [
+      {
+        "id": "part-1",
+        "staves": [
+          {
+            "id": "staff-1",
+            "measures": [
+              {
+                "id": "measure-1-1",
+                "number": 1,
+                "time_signature": {
+                  "beats": 8,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "light-heavy",
+                "voices": [
+                  {
+                    "id": "voice-1",
+                    "staff": 1,
+                    "events": [
+                      {
+                        "type": "note",
+                        "id": "event-1",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 3,
+                          "d": 4
+                        },
+                        "pitch": {
+                          "step": "C",
+                          "alter": 0,
+                          "octave": 4
+                        }
+                      },
+                      {
+                        "type": "note",
+                        "id": "event-2",
+                        "start": {
+                          "n": 3,
+                          "d": 4
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 1
+                        },
+                        "pitch": {
+                          "step": "C",
+                          "alter": 1,
+                          "octave": 4
+                        }
+                      },
+                      {
+                        "type": "note",
+                        "id": "event-3",
+                        "start": {
+                          "n": 7,
+                          "d": 4
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 4
+                        },
+                        "pitch": {
+                          "step": "C",
+                          "alter": 1,
+                          "octave": 4
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "staff-2",
+            "measures": [
+              {
+                "id": "measure-2-1",
+                "number": 1,
+                "time_signature": {
+                  "beats": 8,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "light-heavy",
+                "voices": [
+                  {
+                    "id": "voice-2",
+                    "staff": 2,
+                    "events": [
+                      {
+                        "type": "note",
+                        "id": "event-4",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 2
+                        },
+                        "pitch": {
+                          "step": "D",
+                          "alter": 0,
+                          "octave": 4
+                        }
+                      },
+                      {
+                        "type": "rest",
+                        "id": "event-5",
+                        "start": {
+                          "n": 1,
+                          "d": 2
+                        },
+                        "duration": {
+                          "n": 3,
+                          "d": 2
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "spanners": [
+      {
+        "id": "spanner-1",
+        "type": "tie",
+        "line_style": "solid",
+        "start_anchor": "event-2",
+        "end_anchor": "event-3",
+        "staff_range": [
+          1,
+          1
+        ],
+        "voice_range": [
+          1,
+          1
+        ],
+        "nesting_level": 2
+      },
+      {
+        "id": "spanner-2",
+        "type": "slur",
+        "line_style": "solid",
+        "start_anchor": "event-1",
+        "end_anchor": "event-3",
+        "staff_range": [
+          1,
+          1
+        ],
+        "voice_range": [
+          1,
+          1
+        ],
+        "nesting_level": 1
+      },
+      {
+        "id": "spanner-3",
+        "type": "bracket",
+        "line_style": "solid",
+        "start_anchor": "event-1",
+        "end_anchor": "event-3",
+        "staff_range": [
+          1,
+          2
+        ],
+        "voice_range": [
+          1,
+          1
+        ],
+        "nesting_level": 0
+      }
+    ]
+  }
+}
