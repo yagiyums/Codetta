@@ -26,6 +26,7 @@ MusicXML      = 外部楽譜ソフトとの交換形式
 - `.codetta`の保存と読込
 - Score ModelからASTへのParser / Semantic Analyzer
 - Score Modelを直接編集するComposer
+- 五線譜とPython / `.codetta` JSONを同期するComposer
 - Score Modelを演奏する新しいPerformer
 - Score ModelとMusicXML間の双方向Adapter
 
@@ -39,7 +40,7 @@ MusicXML      = 外部楽譜ソフトとの交換形式
 
 ### Composer
 
-Codetta標準GUIエディタ / IDEです。ユーザーは通常の楽譜を編集する感覚でプログラムを作り、`.codetta`として保存します。JSON、XML、AST、IR、内部IDは通常画面に表示しません。
+Codetta標準GUIエディタ / IDEです。左側の五線譜と右側のPythonを同期し、ユーザーはどちらからでもプログラムを編集できます。右側はPythonの代わりに`.codetta` JSONへ切り替えられます。AST、IR、解析結果は通常画面に表示しません。
 
 ### Conductor
 
@@ -70,9 +71,11 @@ Conductor ─→ Codetta Score Model ─→ .codetta
 
 Codetta Score Model ↔ MusicXML Adapter ↔ MuseScore等
 Codetta Score Model → Score Renderer → Composerの五線譜
+Codetta Score Model ↔ Python Projection → ComposerのPythonペイン
+Codetta Score Model ↔ JSON Serialization → ComposerのJSONペイン
 ```
 
-Score Modelを唯一の編集状態とします。レンダリング済みSVG、MusicXML、AST、IRをComposerの編集状態にはしません。
+Score Modelを唯一の**確定済みドキュメント状態**とします。五線譜、Python、JSONの各ペインはScore Modelの異なる投影です。レンダリング済みSVG、MusicXML、AST、IRをComposerの確定状態にはしません。編集中でまだ検証に成功していないPythonまたはJSONだけは、各テキストエディタの一時Draftとして保持します。
 
 ## Codetta v0.1 Language Specification
 
@@ -494,7 +497,29 @@ ComposerはCodettaの標準ソースコードエディタです。最初の実�
 python -m composer
 ```
 
-通常画面には五線譜だけを表示します。主な編集操作は次のとおりです。
+### ワークスペース
+
+Composerは分割画面を基本とします。
+
+```text
+┌──────────────────────────────┬──────────────────────────────┐
+│ Codetta Score                │ Source                       │
+│                              │ [Python] [.codetta JSON]     │
+│ 通常の五線譜エディタ         │                              │
+│ 音符、声部、小節、スラー     │ result = (3 + 5) * 2         │
+│                              │                              │
+├──────────────────────────────┴──────────────────────────────┤
+│ Synced · Codetta v0.1 · result: 16                          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+- 左ペインは常にCodettaの標準視覚構文である五線譜を表示する。
+- 右ペインは`Python`と`.codetta JSON`を切り替える。
+- 初期表示はPythonとし、ペイン幅を変更できる。
+- 右ペインを閉じてもScore Modelと同期状態は維持する。
+- 通常の実行結果はステータス領域に表示し、楽譜内に値ラベルを追加しない。
+
+五線譜の主な編集操作は次のとおりです。
 
 - 音符と休符の挿入
 - 音価と音高の変更
@@ -510,9 +535,106 @@ python -m composer
 - `.codetta`の保存と読込
 - Undo / Redo
 
+### 三つの編集表現
+
+| 表現 | 役割 | Score Modelとの関係 |
+|---|---|---|
+| Codetta Score | ユーザー向けの標準視覚構文 | 完全な楽譜構造を編集する |
+| Python | 計算上の意味を読み書きしやすく表した投影 | ASTを介するため、音高や細かなレイアウトは表せない |
+| `.codetta` JSON | 保存形式の構造化ビュー | Score Model全体を損失なく表す |
+
+PythonペインはCodettaに代わる正式なソース形式ではありません。Conductorによる意味的な投影です。例えば、意味を変えずに音高だけを変更した場合、JSONは更新されますがPythonは変化しません。Python側で式を変更した場合は、既存の対応箇所の音高、声部、記譜上の設定を可能な限り保ちながらScore Modelを再構成します。
+
+### 双方向同期
+
+編集のたびに反対側を即座に書き換えず、最後の入力から標準400 msが経過した時点で同期を開始します。待ち時間はComposerの設定で変更できます。
+
+```text
+五線譜の編集
+  ↓ Score Command
+Candidate Score Model
+  ↓ validate / semantic analyze
+Committed Score Model
+  ├─→ render → 左ペイン
+  ├─→ AST → Python emitter → Pythonペイン
+  └─→ serialize → JSONペイン
+
+Pythonの編集
+  ↓ parse supported Python subset
+Candidate AST
+  ↓ reconcile / score layout
+Candidate Score Model
+  ↓ validate / semantic analyze / atomic commit
+Committed Score Model
+
+JSONの編集
+  ↓ parse / schema validation / deserialize
+Candidate Score Model
+  ↓ notation validation / semantic analyze / atomic commit
+Committed Score Model
+```
+
+同期は次の規則に従います。
+
+1. 入力中と検証中は入力元のペインを上書きしない。確定後に正規化する場合も、Revision IDが最新であることを確認し、カーソルと選択範囲を復元する。
+2. 構文、スキーマ、記譜、意味のすべての検証に成功した場合だけ、Candidateを一回のトランザクションとして確定する。
+3. 検証に失敗したDraftは入力元に残し、エラー位置と理由を表示する。左ペインと他の右ペインは最後の正常なScore Modelを表示し続ける。
+4. 各編集にRevision IDを付け、遅れて完了した古い変換結果を破棄する。
+5. `Editing`、`Checking`、`Synced`、`Invalid`、`Stale`の状態をステータス領域に表示する。
+6. Invalid Draftがある間に別のペインで確定済みScore Modelが変わった場合、そのDraftを`Stale`とし、ユーザーが適用し直すか破棄するまで自動確定しない。
+7. PythonとJSONを切り替える際は、最後に確定したScore Modelから選択先を生成する。未確定Draftはモードごとに保持する。
+
+これにより、例えばPythonで開き括弧だけを入力した途中状態によって、正しい五線譜が消えることはありません。
+
+### Python Projection v0.1
+
+Pythonペインは次の安全な部分集合だけを受け付けます。
+
+- 整数リテラル
+- 二項演算`+`、`-`、`*`、`/`
+- 単項マイナス
+- 括弧
+- 一つの式、またはその式を`result`へ代入する文
+- コメントと空行。ただしScore Modelには保存しない
+- 正確な有理数を表すためにComposer自身が生成した`fractions.Fraction`のImportと呼び出し
+
+Import、関数呼び出し、属性参照、添字、比較、条件式、ループ、内包表記などは、上記の`Fraction`形式を除いて拒否します。Pythonは`ast`モジュールで構文木として解析し、`eval`や`exec`では実行しません。
+
+除算を含まない例では、次の簡潔なPythonを表示できます。
+
+```python
+result = (3 + 5) * 2
+```
+
+除算を含む場合、Pythonとして実行してもCodettaと同じ正確な有理数になるよう、正規化後は`Fraction`を使用します。
+
+```python
+from fractions import Fraction
+
+result = (Fraction(3) + Fraction(1)) / Fraction(2)
+```
+
+ユーザーが`result = (3 + 1) / 2`と入力することも許可し、Codettaへは同じASTとして取り込みます。同期後のPythonは上記の正規形に整形されます。v0.1ではコメント、空白、余分な括弧などPython固有の表記をScore Modelへ保存しないため、次に同期した際に正規化されることがあります。
+
+### Pythonから楽譜への再構成
+
+Pythonは音高、声部配置、符幹方向などを持たないため、ASTと既存Score Modelの対応を使って次の順に楽譜を再構成します。
+
+1. 変更されていないAST部分木は、元の音符ID、音高、声部、スパナーを維持する。
+2. 数値だけが変わった場合は、元の音高を保ち、タイを含む音価チェーンを新しい値へ調整する。
+3. 演算構造だけが変わった場合は、再利用できる子ノードの記譜を保ち、必要な声部とグループ記号を組み直す。
+4. 新しい部分式はConductorの標準レイアウト規則で配置する。
+5. 対応を一意に決められない大きな変更では、式全体を標準レイアウトし直す。
+
+自動配置によって音楽的な見た目が変わり得る場合は、確定前のプレビューと`Notation will be relaid out`という診断を表示します。JSONペインからの編集は完全な楽譜構造を含むため、この意味上の不足はありません。
+
+### Undo / Redo
+
+確定した同期は入力元にかかわらず、一つのScore Modelトランザクションとして共通のUndo / Redo履歴へ積みます。未確定のPythonおよびJSON Draftでは、テキストエディタ固有のUndo / Redoを使います。
+
 ### Normal Mode
 
-JSON、XML、内部ID、AST、IR、計算値、演算名、評価順序、解析結果を表示しません。
+左ペインには通常の五線譜、右ペインには初期状態でPythonを表示します。`.codetta` JSONはユーザーが明示的に切り替えた場合だけ表示します。MusicXML、AST、IR、解析結果は表示しません。JSON内の内部IDは構造上必要なためJSONモードでは表示しますが、五線譜上には重ねません。
 
 ### Debug Mode
 
@@ -526,6 +648,13 @@ Semantic Analyzerが生成した次の情報を別レイヤーとして重ねま
 - 現在実行中のノード
 
 Debug情報は`.codetta`へ保存せず、Score Modelから毎回再生成します。
+
+### 安全性と性能
+
+- Python Draftを任意コードとして実行しない。
+- JSONは最大サイズ、ネスト深度、配列長を制限してから解析する。
+- 同期変換はUIスレッドの外で実行し、Revision IDでキャンセル可能にする。
+- 自動同期だけではファイル保存を行わない。保存操作でのみ`.codetta`へ書き込む。
 
 ## Conductor
 
@@ -611,12 +740,15 @@ composer/
 ├── server.py
 ├── commands.py
 ├── session.py
+├── sync_controller.py
+├── python_projection.py
 └── static/
 
 conductor/
 ├── parser.py
 ├── compiler.py
-└── score_builder.py
+├── score_builder.py
+└── score_reconciler.py
 
 performer/
 ├── evaluator.py
@@ -644,16 +776,20 @@ tests/
 ## 最初のE2E完了条件
 
 1. Composerを起動できる。
-2. 空の通常五線譜を表示できる。
-3. 音符、休符、タイ、声部、グループを編集できる。
-4. `(3 + 5) * 2`を五線譜として作成できる。
-5. `.codetta`として保存できる。
-6. 再読込後に同じScore Modelと五線譜を復元できる。
-7. Score ParserがASTを生成できる。
-8. Performerが16を出力できる。
-9. Score Modelの音符を同時声部を含めて再生できる。
-10. MusicXMLへExportできる。
-11. ExportしたMusicXMLをImportし、同じ意味のASTを復元できる。
+2. 左に空の通常五線譜、右にPythonペインを表示できる。
+3. 右ペインを`.codetta` JSONへ切り替えられる。
+4. 音符、休符、タイ、声部、グループを編集できる。
+5. `(3 + 5) * 2`を五線譜として作成すると、少し後に`result = (3 + 5) * 2`がPythonへ反映される。
+6. Pythonを`result = (3 + 5) * 3`へ変更すると、検証後に対応する五線譜へ更新される。
+7. JSONで有効な音高や音価を変更すると、検証後に同じ構造の五線譜へ更新される。
+8. 不正なPythonまたはJSONを入力しても、最後の正常な五線譜とScore Modelが維持される。
+9. `.codetta`として保存できる。
+10. 再読込後に同じScore Modelと五線譜を復元できる。
+11. Score ParserがASTを生成できる。
+12. Performerが16を出力できる。
+13. Score Modelの音符を同時声部を含めて再生できる。
+14. MusicXMLへExportできる。
+15. ExportしたMusicXMLをImportし、同じ意味のASTを復元できる。
 
 自動テストでは、`.codetta`内に`integer`、`multiply`、計算済みの`16`などが保存されていないことも確認します。音価、タイ、声部、スパナーを変更した場合に、その視覚的変更からASTと結果が変わることを検証します。
 
@@ -665,8 +801,9 @@ tests/
 4. Performerを`.codetta → Score Model → AST / IR`へ変更する。
 5. PlayerをScore Modelのポリフォニック再生へ変更する。
 6. MusicXML生成を`IR → MusicXML`から`Score Model ↔ MusicXML`へ移す。
-7. ComposerをScore Modelの標準GUIとして実装する。
-8. 旧実行用SVGを互換機能として非推奨化する。
+7. Python Projectionと既存記譜を保つScore Reconcilerを実装する。
+8. ComposerをScore Modelの標準GUIとして実装し、Python / JSONとの同期を追加する。
+9. 旧実行用SVGを互換機能として非推奨化する。
 
 ## 現在のプロトタイプを実行する
 
