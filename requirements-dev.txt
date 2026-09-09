@@ -1,0 +1,2 @@
+-r requirements-rendering.txt
+lxml==6.1.3

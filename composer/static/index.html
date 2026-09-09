@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Codetta Composer</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <header class="titlebar">
+    <div class="brand"><img src="/assets/composer.png" alt=""><span>Codetta</span></div>
+    <nav class="menubar" aria-label="Main menu">
+      <button data-menu="file">File</button><button data-menu="edit">Edit</button><button data-menu="view">View</button><button data-menu="run">Run</button>
+    </nav>
+    <div class="command-center" title="Command palette (Ctrl+Shift+P)">
+      <svg aria-hidden="true"><use href="#i-search"/></svg><span id="commandTitle">calculator.codetta</span><kbd>Ctrl K</kbd>
+    </div>
+    <div class="window-tools"><span class="sync-dot"></span><span>Local workspace</span></div>
+  </header>
+
+  <div class="workbench">
+    <aside class="activitybar" aria-label="Activity">
+      <button class="active" title="Explorer" aria-label="Explorer"><svg><use href="#i-files"/></svg></button>
+      <button title="Search" aria-label="Search"><svg><use href="#i-search"/></svg></button>
+      <button title="Source control" aria-label="Source control"><svg><use href="#i-branch"/></svg></button>
+      <button title="Extensions" aria-label="Extensions"><svg><use href="#i-grid"/></svg></button>
+      <span class="activity-spacer"></span>
+      <button id="settingsButton" title="Settings" aria-label="Settings"><svg><use href="#i-settings"/></svg></button>
+    </aside>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-heading"><span>EXPLORER</span><button aria-label="More">•••</button></div>
+      <div class="workspace-name"><svg><use href="#i-chevron"/></svg><strong>CODETTA WORKSPACE</strong></div>
+      <button class="file-row active" id="scoreFile"><svg><use href="#i-music"/></svg><span>calculator.codetta</span><i class="dirty-indicator"></i></button>
+      <div class="outline-heading"><svg><use href="#i-chevron"/></svg><span>OUTLINE</span></div>
+      <div class="outline" id="outline">
+        <button data-focus="score"><svg><use href="#i-score"/></svg><span>Score</span><em>visual syntax</em></button>
+        <button data-focus="source"><svg><use href="#i-code"/></svg><span>Source</span><em>Python projection</em></button>
+      </div>
+      <div class="getting-started">
+        <div class="tip-mark">⌘</div>
+        <strong>Two views, one program</strong>
+        <p>Edit the notation or source. Composer keeps the last valid score safe while you type.</p>
+      </div>
+    </aside>
+
+    <main class="editor-area">
+      <div class="editor-tabs">
+        <button class="editor-tab active"><svg><use href="#i-music"/></svg><span id="tabTitle">calculator.codetta</span><span class="tab-close">×</span></button>
+        <div class="tab-actions">
+          <button id="toggleSource" title="Toggle source pane"><svg><use href="#i-columns"/></svg></button>
+          <button id="moreButton" title="More actions">•••</button>
+        </div>
+      </div>
+
+      <div class="editor-grid" id="editorGrid">
+        <section class="pane score-pane" id="scorePane" aria-label="Score editor">
+          <div class="pane-toolbar">
+            <div class="breadcrumb"><svg><use href="#i-music"/></svg><span>Codetta Score</span><b>›</b><span id="scoreBreadcrumb">Measure 1</span></div>
+            <div class="pane-actions">
+              <button id="zoomOut" title="Zoom out"><svg><use href="#i-minus"/></svg></button><span id="zoomLabel">100%</span><button id="zoomIn" title="Zoom in"><svg><use href="#i-plus"/></svg></button>
+              <span class="separator"></span>
+              <button id="debugButton" title="Toggle semantic overlay"><svg><use href="#i-bug"/></svg></button>
+            </div>
+          </div>
+
+          <div class="notation-toolbar" role="toolbar" aria-label="Notation tools">
+            <button class="tool active" data-tool="select" title="Select (V)"><svg><use href="#i-pointer"/></svg><span>Select</span></button>
+            <span class="separator"></span>
+            <button class="tool" data-tool="note" title="Insert note"><span class="music-glyph">♩</span><span>Note</span></button>
+            <button class="tool" data-tool="rest" title="Insert rest"><span class="music-glyph">𝄽</span><span>Rest</span></button>
+            <div class="duration-group" aria-label="Duration">
+              <button data-duration="1/1" title="Whole note">○</button><button data-duration="1/2" title="Half note">◐</button><button data-duration="1/4" class="active" title="Quarter note">●</button><button data-duration="1/8" title="Eighth note">♪</button>
+            </div>
+            <span class="separator"></span>
+            <button class="tool" data-tool="tie" title="Tie"><span class="tie-glyph">⌒</span><span>Tie</span></button>
+            <button class="tool" data-tool="slur" title="Group as sum"><span class="tie-glyph">︵</span><span>Slur</span></button>
+            <button class="tool" data-tool="bracket" title="Group as product"><span class="bracket-glyph">⊓</span><span>Bracket</span></button>
+          </div>
+
+          <div class="score-scroll" id="scoreScroll">
+            <div class="score-welcome">
+              <div><span class="eyebrow">CODETTA SCORE</span><h1 id="documentTitle">Codetta calculator demo</h1></div>
+              <div class="score-meta"><span id="staffMeta">2 staves</span><span>120 BPM</span><span>Concert pitch</span></div>
+            </div>
+            <div class="score-paper" id="scorePaper">
+              <div class="render-loading" id="renderLoading"><span></span><span>Engraving score…</span></div>
+              <div class="score-svg" id="scoreSvg"></div>
+              <div class="semantic-legend" id="semanticLegend"><span><i class="sum"></i>Sum</span><span><i class="product"></i>Product</span><span><i class="inverse"></i>Inverse</span></div>
+            </div>
+            <div class="event-navigator">
+              <div class="event-nav-title"><span>Notation events</span><small>Choose an event to edit its musical properties</small></div>
+              <div class="event-list" id="eventList"></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="resizer" id="resizer" title="Drag to resize"></div>
+
+        <section class="pane source-pane" id="sourcePane" aria-label="Source editor">
+          <div class="source-header">
+            <div class="source-tabs" role="tablist">
+              <button class="active" role="tab" data-mode="python"><svg><use href="#i-python"/></svg>Python</button>
+              <button role="tab" data-mode="json"><span class="braces">{ }</span>.codetta JSON</button>
+            </div>
+            <div class="pane-actions"><button id="formatButton" title="Format document"><svg><use href="#i-wand"/></svg></button><button id="closeSource" title="Close source pane"><svg><use href="#i-close"/></svg></button></div>
+          </div>
+          <div class="code-shell" id="codeShell">
+            <div class="line-numbers" id="lineNumbers">1</div>
+            <textarea id="sourceEditor" aria-label="Source code" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
+          </div>
+          <div class="diagnostic-bar" id="diagnosticBar">
+            <svg><use href="#i-info"/></svg><span id="diagnosticText">Python is a semantic projection. Musical layout stays in the score.</span>
+          </div>
+          <aside class="inspector" id="inspector">
+            <div class="inspector-title"><span>NOTE INSPECTOR</span><button id="closeInspector" aria-label="Close inspector">×</button></div>
+            <div class="inspector-empty" id="inspectorEmpty">Select a notation event to edit it.</div>
+            <div class="inspector-fields" id="inspectorFields" hidden>
+              <label>Event <output id="eventId"></output></label>
+              <div class="field-row">
+                <label>Pitch<select id="pitchStep"><option>C</option><option>D</option><option>E</option><option>F</option><option>G</option><option>A</option><option>B</option></select></label>
+                <label>Octave<input id="pitchOctave" type="number" min="-1" max="9"></label>
+              </div>
+              <label class="duration-field">Duration<select id="eventDuration"><option value="1/1">Whole note</option><option value="3/4">Dotted half</option><option value="1/2">Half note</option><option value="3/8">Dotted quarter</option><option value="1/4">Quarter note</option><option value="1/8">Eighth note</option><option value="1/16">Sixteenth note</option></select></label>
+              <div class="field-row">
+                <label>Accidental<select id="accidental"><option value="">Automatic</option><option value="sharp">Sharp ♯</option><option value="flat">Flat ♭</option><option value="natural">Natural ♮</option></select></label>
+                <label>Stem<select id="stem"><option value="">Automatic</option><option value="up">Up</option><option value="down">Down</option></select></label>
+              </div>
+              <p class="inspector-hint" id="inspectorHint">Pitch and engraving changes preserve the program's computed value.</p>
+            </div>
+          </aside>
+        </section>
+      </div>
+
+      <footer class="statusbar">
+        <button class="status-primary" id="syncStatus"><svg><use href="#i-check"/></svg><span>Synced</span></button>
+        <button><svg><use href="#i-branch"/></svg><span>main*</span></button>
+        <span class="status-spacer"></span>
+        <button id="problemsStatus"><svg><use href="#i-error"/></svg><span>0</span><svg><use href="#i-warning"/></svg><span>0</span></button>
+        <button><span>Codetta v0.1</span></button>
+        <button id="resultStatus" class="result-status"><span>result:</span><strong>—</strong></button>
+        <button id="playButton"><svg><use href="#i-play"/></svg><span>Run score</span></button>
+      </footer>
+    </main>
+  </div>
+
+  <div class="toast-region" id="toasts" aria-live="polite"></div>
+  <input id="fileInput" type="file" accept=".codetta,application/json" hidden>
+
+  <dialog id="commandDialog">
+    <div class="command-input"><svg><use href="#i-search"/></svg><input id="commandInput" placeholder="Type a command…" autocomplete="off"></div>
+    <div class="command-list">
+      <button data-command="save"><span>Save score as .codetta</span><kbd>Ctrl S</kbd></button>
+      <button data-command="open"><span>Open .codetta file</span><kbd>Ctrl O</kbd></button>
+      <button data-command="run"><span>Run / play score</span><kbd>F5</kbd></button>
+      <button data-command="toggle-source"><span>View: Toggle source pane</span><kbd>Ctrl J</kbd></button>
+      <button data-command="debug"><span>View: Toggle debug overlay</span></button>
+    </div>
+  </dialog>
+
+  <svg class="svg-defs" aria-hidden="true">
+    <symbol id="i-files" viewBox="0 0 24 24"><path d="M6 2h7l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M13 2v6h6M2 7v13a2 2 0 0 0 2 2"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+    <symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 7v10M8 17c5 0 8-2 8-7"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6 1.7 1.7 0 0 0 10 3V2.8h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+    <symbol id="i-music" viewBox="0 0 24 24"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></symbol>
+    <symbol id="i-score" viewBox="0 0 24 24"><path d="M4 6h16M4 9h16M4 12h16M4 15h16M4 18h16"/><path d="M9 4v10"/><circle cx="7" cy="15" r="2"/></symbol>
+    <symbol id="i-code" viewBox="0 0 24 24"><path d="m8 9-4 3 4 3M16 9l4 3-4 3M14 5l-4 14"/></symbol>
+    <symbol id="i-columns" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M14 4v16"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol><symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-bug" viewBox="0 0 24 24"><path d="M8 8h8v8a4 4 0 0 1-8 0V8ZM9 4l2 2m4-2-2 2M4 11h4m8 0h4M4 16h4m8 0h4"/></symbol>
+    <symbol id="i-pointer" viewBox="0 0 24 24"><path d="m5 3 13 9-6 1-3 6-4-16Z"/></symbol>
+    <symbol id="i-python" viewBox="0 0 24 24"><path d="M12 3c-5 0-5 2-5 5v2h10v2H5c-3 0-3 7 0 7h3v-3c0-2 2-3 4-3h5c2 0 3-2 3-4V8c0-3-3-5-8-5Z"/><circle cx="10" cy="6.5" r=".7"/><path d="M12 21c5 0 5-2 5-5v-2H7v-2h12c3 0 3-7 0-7h-3v3c0 2-2 3-4 3H7c-2 0-3 2-3 4v1c0 3 3 5 8 5Z"/><circle cx="14" cy="17.5" r=".7"/></symbol>
+    <symbol id="i-wand" viewBox="0 0 24 24"><path d="m4 20 11-11 4 4L8 24M14 4l1-3m4 6 3-1m-3-3 2-2M5 9 2 8m6-3L7 2"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10h.01"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-error" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v6m0 4h.01"/></symbol>
+    <symbol id="i-warning" viewBox="0 0 24 24"><path d="M12 3 2 21h20L12 3Z"/><path d="M12 9v5m0 3h.01"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7V5Z"/></symbol>
+  </svg>
+  <script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+# Optional engraving dependency; evaluation and WAV playback remain dependency-free.
+verovio==6.3.0
