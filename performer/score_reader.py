@@ -99,7 +99,8 @@ def from_svg(svg: str) -> ir.Emit:
     try:
         root = ET.fromstring(svg)
         if root.tag != tag("svg") or root.get("data-codetta-version") != VERSION:
-            raise ScoreError("Expected a Codetta v0.1 SVG score")
+            raise ScoreError("Expected an executable Codetta v0.1 SVG score. "
+                             "Display SVG/MusicXML cannot be executed; generate with --format executable-svg.")
         # Note names must continue to refer to the actual v0.1 visible glyphs.
         expected = ET.Element(tag("svg"))
         add_glyphs(expected)

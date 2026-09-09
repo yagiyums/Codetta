@@ -2,36 +2,62 @@
 
 A programming language that turns musical scores into executable programs, where rhythm and musical structure express computation.
 
-## 実行方法
+## 五線譜を表示する
 
-Python 3.10以上。外部ライブラリのインストールは不要です。リポジトリのルートで実行してください。
+Python 3.10以上。リポジトリのルートで実行してください。通常表示はMusicXMLをVerovioで組版した五線譜です。
 
-```powershell
-python -m conductor "(3 + 5) * 2" -o examples/calculator/score.svg
-python -m performer examples/calculator/score.svg --no-play
-```
-
-保存したSVG楽譜だけを読み直し、`16`を出力します。SVGはブラウザで開いて閲覧できます。
-
-Windowsでの音声再生と、演奏中のフレーズ表示：
+初回セットアップ：
 
 ```powershell
-python -m performer examples/calculator/score.svg --trace
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements-rendering.txt
 ```
 
-WAVへの書き出し（音声デバイス不要）：
+ブラウザで開ける楽譜を作成：
 
 ```powershell
-python -m performer examples/calculator/score.svg --no-play --wav examples/calculator/performance.wav
+.\.venv\Scripts\python.exe -m conductor "(3 + 5) * 2" -o examples/calculator/score.html
 ```
 
-`--bpm 180`で演奏速度を変更できます。テンポは計算結果に影響しません。先頭がマイナスの式は`python -m conductor -o negative.svg -- "-(3 + 5)"`のように渡します。
+[サンプルの楽譜](examples/calculator/score.html)をブラウザで開いてください。通常表示には演算名や値のラベルを出しません。**Debug mode**をオンにすると、IRの構造とリテラルの値を楽譜上に注記します。**Print / Save PDF**からPDFとして保存できます。HTMLはフォントの輪郭を含むSVGを内蔵し、閲覧時のサーバーやネット接続は不要です。
 
-テスト：
+SVG・MusicXMLの出力と、既存MusicXMLの表示：
 
 ```powershell
-python -m unittest discover -s tests -v
+.\.venv\Scripts\python.exe -m conductor "(3 + 5) * 2" -o examples/calculator/score.svg
+.\.venv\Scripts\python.exe -m conductor "(3 + 5) * 2" -o examples/calculator/score.musicxml
+.\.venv\Scripts\python.exe -m rendering examples/notation/features.musicxml -o examples/notation/features.html
 ```
+
+`.svg`は通常の五線譜、`.html`は閲覧・印刷用ページ、`.musicxml`は交換用の楽譜です。複数ページのSVGは`score.svg`、`score-2.svg`…に分けて出力します。`--debug`を指定したSVG・MusicXMLにだけIR注記を含めます。表示用拍子・調号・音部記号は`--time 3/4 --fifths -2 --clef bass`のように指定できます。
+
+和音・休符・複数声部・拍子や調号の変更を含む例は[features.musicxml](examples/notation/features.musicxml)と[その表示](examples/notation/features.html)です。表示層の設計・記号の読み方・制約は[docs/rendering.md](docs/rendering.md)を参照してください。
+
+## プログラムを実行する
+
+表示と実行は別の経路です。実行には既存のCodetta専用SVG形式を明示して出力します。この経路とMusicXML生成には外部ライブラリは不要です。
+
+```powershell
+python -m conductor "(3 + 5) * 2" --format executable-svg -o examples/calculator/program.codetta.svg
+python -m performer examples/calculator/program.codetta.svg --no-play
+```
+
+保存した実行用SVGだけを読み直し、`16`を出力します。Windowsでの再生・トレースと、WAV出力：
+
+```powershell
+python -m performer examples/calculator/program.codetta.svg --trace
+python -m performer examples/calculator/program.codetta.svg --no-play --wav examples/calculator/performance.wav
+```
+
+`--bpm 180`で演奏速度を変更できます。テンポは計算結果に影響しません。先頭がマイナスの式は`python -m conductor -o negative.musicxml -- "-(3 + 5)"`のように渡します。
+
+テスト（Verovioを含む環境）：
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+```
+
+正式なMusicXMLスキーマでの検証を再実行する手順は[表示層の検証手順](docs/rendering.md#検証)を参照してください。
 
 ## ディレクトリ構成
 
@@ -40,7 +66,11 @@ Codetta/
 ├── conductor/
 │   ├── parser.py          # 入力式 → AST
 │   ├── compiler.py        # AST → IR（定数畳み込みなし）
-│   └── score_writer.py    # IR → SVG楽譜
+│   └── score_writer.py    # IR → 既存の実行用SVG
+├── rendering/
+│   ├── model.py           # IR → 表示用の音符・声部・記譜情報
+│   ├── musicxml.py        # 表示モデル → MusicXML 4.0
+│   └── renderer.py        # Verovioによる通常の五線譜SVG・HTML
 ├── performer/
 │   ├── score_reader.py    # SVG楽譜 → IR
 │   ├── evaluator.py       # 正確な有理数による評価
@@ -51,7 +81,9 @@ Codetta/
 │   ├── semantics.py
 │   └── notation.py        # 共通の楽譜記号と音価
 ├── examples/
-│   └── calculator/
+│   ├── calculator/
+│   └── notation/
+├── docs/
 └── tests/
 ```
 
@@ -59,7 +91,7 @@ Codetta/
 
 ## 設計仕様
 
-以下は初期の設計仕様です。実装で具体化した保存形式と制約は末尾の「9. v0.1の実装仕様」を参照してください。
+以下は初期の設計仕様です。「9. v0.1の実装仕様」は既存の実行用形式を説明しています。新しい通常の五線譜表示は独立した表示層で、[docs/rendering.md](docs/rendering.md)に仕様を記載しています。
 
 Codetta v0.1は、**楽譜を「符号付きの時間量を組み立てる構造」として扱う言語**にするのがよいと思います。
 
@@ -325,7 +357,7 @@ v0.1では、**記号構造を保存した電子楽譜を読む**ことを対象
 
 この設計で特に筋が通るのは、**加算を時間の連結、乗除算を時間の伸縮として統一できる点**です。減算・ゼロ・制御関係には専用記号を使い、その拡張部分まで含めてCodettaの楽譜文法として明確に定義します。
 
-## 9. v0.1の実装仕様
+## 9. v0.1の実装仕様（既存の実行用形式）
 
 ### 保存形式
 

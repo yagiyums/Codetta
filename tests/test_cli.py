@@ -17,7 +17,7 @@ class CommandLineTests(unittest.TestCase):
             score = Path(folder) / "score.svg"
             source = Path(folder) / "expression.txt"
             source.write_text("(3 + 5) * 2", encoding="utf-8")
-            compiled = self.run_module("conductor", "--input", source, "-o", score)
+            compiled = self.run_module("conductor", "--input", source, "--format", "executable-svg", "-o", score)
             self.assertEqual(compiled.returncode, 0, compiled.stderr)
             source.unlink()  # Performer must work without access to the input expression.
             performed = self.run_module("performer", score, "--no-play")
@@ -36,7 +36,7 @@ class CommandLineTests(unittest.TestCase):
     def test_runtime_error_is_reported_without_a_traceback(self):
         with tempfile.TemporaryDirectory() as folder:
             score = Path(folder) / "score.svg"
-            compiled = self.run_module("conductor", "1 / (2 - 2)", "-o", score)
+            compiled = self.run_module("conductor", "1 / (2 - 2)", "--format", "executable-svg", "-o", score)
             self.assertEqual(compiled.returncode, 0, compiled.stderr)
             result = self.run_module("performer", score, "--no-play")
             self.assertNotEqual(result.returncode, 0)

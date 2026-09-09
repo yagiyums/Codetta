@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='utf-8'?>
+<score-partwise version="4.0">
+  <identification>
+    <encoding>
+      <software>Codetta</software>
+    </encoding>
+  </identification>
+  <defaults>
+    <scaling>
+      <millimeters>7</millimeters>
+      <tenths>40</tenths>
+    </scaling>
+  </defaults>
+  <part-list>
+    <score-part id="P1">
+      <part-name />
+    </score-part>
+  </part-list>
+  <part id="P1">
+    <measure number="1">
+      <attributes>
+        <divisions>8</divisions>
+        <key>
+          <fifths>0</fifths>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <staves>2</staves>
+        <part-symbol top-staff="1" bottom-staff="2">bracket</part-symbol>
+        <clef number="1">
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <clef number="2">
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+      </attributes>
+      <direction placement="above">
+        <direction-type>
+          <bracket number="1" line-type="solid" line-end="down" default-y="25" type="start" />
+        </direction-type>
+        <offset>0</offset>
+        <staff>1</staff>
+      </direction>
+      <note id="n-s1-v1-m1-1">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>24</duration>
+        <voice>1</voice>
+        <type>half</type>
+        <dot />
+        <staff>1</staff>
+        <notations>
+          <slur type="start" number="1" placement="above" />
+        </notations>
+      </note>
+      <note id="n-s1-v1-m1-2">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>8</duration>
+        <tie type="start" />
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+        <notations>
+          <tied type="start" />
+        </notations>
+      </note>
+      <backup>
+        <duration>32</duration>
+      </backup>
+      <note id="n-s2-v1-m1-1">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>16</duration>
+        <voice>5</voice>
+        <type>half</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m1-2">
+        <rest />
+        <duration>16</duration>
+        <voice>5</voice>
+        <type>half</type>
+        <staff>2</staff>
+      </note>
+    </measure>
+    <measure number="2">
+      <direction placement="above">
+        <direction-type>
+          <bracket number="1" line-type="solid" line-end="down" default-y="25" type="stop" />
+        </direction-type>
+        <offset>32</offset>
+        <staff>1</staff>
+      </direction>
+      <note id="n-s1-v1-m2-1">
+        <pitch>
+          <step>C</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>32</duration>
+        <tie type="stop" />
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+        <notations>
+          <tied type="stop" />
+          <slur type="stop" number="1" />
+        </notations>
+      </note>
+      <backup>
+        <duration>32</duration>
+      </backup>
+      <note id="n-s2-v1-m2-1">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <barline location="right">
+        <bar-style>light-heavy</bar-style>
+      </barline>
+    </measure>
+  </part>
+</score-partwise>
