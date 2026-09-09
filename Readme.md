@@ -18,7 +18,7 @@ MusicXML      = 外部楽譜ソフトとの交換形式
 
 ## 開発状況
 
-`develop`ブランチにはComposerを除くCodetta v0.1の実行系を実装しています。
+`develop`ブランチにはCodetta v0.1の実行系とローカルWeb IDEのComposerを実装しています。
 
 - 正式なCodetta Score Modelと`.codetta` JSON Serialization
 - Score ModelからASTを導出するScore Parser / Semantic Analyzer
@@ -27,9 +27,10 @@ MusicXML      = 外部楽譜ソフトとの交換形式
 - Score Modelの複数声部を同時再生するWAV / Windows Player
 - Score ModelからMusicXMLを生成するExporter
 - Verovioによる通常五線譜のSVG / HTMLレンダリング
+- 五線譜、Python、`.codetta` JSONを同期するComposer
 - `(3 + 5) * 2`を16として実行・表示・再生するcalculator example
 
-旧実行用SVGと旧IRの互換経路は削除し、Score Model中心の構成へ統一しました。ComposerとMusicXML Importは今後の実装範囲です。
+旧実行用SVGと旧IRの互換経路は削除し、Score Model中心の構成へ統一しました。MusicXML Importは今後の実装範囲です。
 
 ## Codetta全体の役割
 
@@ -503,12 +504,11 @@ Playerは各音符の開始位置をScore Modelから直接読みます。同じ
 
 ## Composer
 
-> この章は今後実装するComposerの仕様です。現在のv0.1実装にはComposerを含みません。
-
-ComposerはCodettaの標準ソースコードエディタです。最初の実装はPythonから起動するローカルWebアプリを想定します。
+ComposerはCodettaの標準ソースコードエディタです。PythonからローカルWebアプリとして起動します。引数を省略するとcalculator exampleを開き、`.codetta`ファイルを指定するとそのファイルから開始します。
 
 ```powershell
 python -m composer
+python -m composer examples\calculator\program.codetta
 ```
 
 ### ワークスペース
@@ -773,6 +773,11 @@ rendering/
 ├── musicxml.py
 └── renderer.py
 
+composer/
+├── projection.py
+├── server.py
+└── static/
+
 examples/
 ├── calculator/
 └── notation/
@@ -792,7 +797,7 @@ tests/
 - [x] MusicXMLへExportする。
 - [x] Verovioで通常の五線譜をSVG / HTMLへ描画する。
 - [x] 通常表示から値、演算名、AST、IRを除き、Debug表示だけへ重ねる。
-- [ ] Composerで五線譜、Python、JSONを双方向編集する。
+- [x] Composerで五線譜、Python、JSONを双方向編集する。
 - [ ] MusicXMLをScore ModelへImportする。
 
 自動テストでは、`.codetta`内に`integer`、`multiply`、計算済みの`16`などが保存されていないことも確認します。音価、タイ、声部、スパナーを変更した場合に、その視覚的変更からASTと結果が変わることを検証します。
@@ -807,6 +812,14 @@ python -m venv .venv
 ```
 
 calculator exampleは、`.codetta`、MusicXML、SVG、HTML、WAVを生成し、保存した`.codetta`を再読込して16を出力します。
+
+Composerを起動する場合：
+
+```powershell
+.\.venv\Scripts\python.exe -m composer
+```
+
+ブラウザでは五線譜とPythonを並べて編集でき、`.codetta` JSONへの切り替え、400 ms後の検証付き同期、音符の音高・臨時記号・符幹編集、Undo / Redo、Debug表示、再生、ファイルの読込・ダウンロード保存を利用できます。
 
 ```powershell
 .\.venv\Scripts\python.exe examples\calculator\demo.py
