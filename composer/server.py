@@ -58,8 +58,10 @@ class ComposerApplication:
     def open(cls, path: Path | None = None, *, max_iterations: int = 10_000) -> "ComposerApplication":
         if path is not None:
             return cls(read_score(path), max_iterations=max_iterations)
-        example = ROOT / "examples" / "calculator" / "program.codetta"
-        return cls(read_score(example) if example.exists() else compile_expression("(3 + 5) * 2"),
+        examples = (ROOT / "examples" / "v02" / "program.codetta",
+                    ROOT / "examples" / "calculator" / "program.codetta")
+        example = next((item for item in examples if item.exists()), None)
+        return cls(read_score(example) if example else compile_expression("(3 + 5) * 2"),
                    max_iterations=max_iterations)
 
     def _build(self, score: Score) -> Snapshot:

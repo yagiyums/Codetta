@@ -1,3 +1,4 @@
+from pathlib import Path
 import unittest
 
 from codetta.score_parser import parse_score
@@ -11,6 +12,9 @@ try:
     import verovio  # noqa: F401
 except ImportError:
     verovio = None
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 class ComposerProjectionTests(unittest.TestCase):
@@ -76,7 +80,7 @@ class ComposerApplicationTests(unittest.TestCase):
     def test_invalid_draft_does_not_replace_committed_score(self):
         from composer.server import ComposerApplication
 
-        application = ComposerApplication.open()
+        application = ComposerApplication.open(ROOT / "examples" / "calculator" / "program.codetta")
         before = application.payload()
         with self.assertRaises(CodettaError):
             application.sync_python("result = (3 +", 1)
@@ -86,7 +90,7 @@ class ComposerApplicationTests(unittest.TestCase):
     def test_python_and_json_can_both_commit(self):
         from composer.server import ComposerApplication
 
-        application = ComposerApplication.open()
+        application = ComposerApplication.open(ROOT / "examples" / "calculator" / "program.codetta")
         original = application.payload()["json"]
         changed = application.sync_python("result = 9 / 4", 1)
         self.assertEqual(changed["result"], "9/4")
@@ -116,6 +120,14 @@ result = keep_large(values)
         self.assertTrue(notation["repeats"])
         self.assertTrue(notation["voltas"])
         self.assertTrue(application.audio())
+
+    def test_default_document_enables_v02_structure_tools(self):
+        from composer.server import ComposerApplication
+
+        payload = ComposerApplication.open().payload()
+        self.assertEqual(payload["result"], "10")
+        self.assertEqual(payload["score"]["language_version"], "0.2")
+        self.assertTrue(payload["score"]["score"]["sections"])
 
 
 if __name__ == "__main__":

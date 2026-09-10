@@ -20,16 +20,16 @@
 
   <div class="workbench">
     <aside class="activitybar" aria-label="Activity">
-      <button class="active" title="Explorer" aria-label="Explorer"><svg><use href="#i-files"/></svg></button>
-      <button title="Search" aria-label="Search"><svg><use href="#i-search"/></svg></button>
-      <button title="Source control" aria-label="Source control"><svg><use href="#i-branch"/></svg></button>
-      <button title="Extensions" aria-label="Extensions"><svg><use href="#i-grid"/></svg></button>
+      <button class="active" data-activity="explorer" title="Explorer" aria-label="Explorer"><svg><use href="#i-files"/></svg></button>
+      <button data-activity="search" title="Search commands" aria-label="Search"><svg><use href="#i-search"/></svg></button>
+      <button data-activity="source" title="Source control status" aria-label="Source control"><svg><use href="#i-branch"/></svg></button>
+      <button data-activity="extensions" title="Extensions" aria-label="Extensions"><svg><use href="#i-grid"/></svg></button>
       <span class="activity-spacer"></span>
       <button id="settingsButton" title="Settings" aria-label="Settings"><svg><use href="#i-settings"/></svg></button>
     </aside>
 
     <aside class="sidebar" id="sidebar">
-      <div class="sidebar-heading"><span>EXPLORER</span><button aria-label="More">•••</button></div>
+      <div class="sidebar-heading"><span>EXPLORER</span><button id="explorerMore" aria-label="More">•••</button></div>
       <div class="workspace-name"><svg><use href="#i-chevron"/></svg><strong>CODETTA WORKSPACE</strong></div>
       <button class="file-row active" id="scoreFile"><svg><use href="#i-music"/></svg><span>calculator.codetta</span><i class="dirty-indicator"></i></button>
       <div class="outline-heading"><svg><use href="#i-chevron"/></svg><span>OUTLINE</span></div>
@@ -44,7 +44,7 @@
         <button data-structure="value" title="Place an Int value on the selected Voice">+ Value</button>
         <button data-structure="rename" title="Rename the selected Voice">Rename</button>
         <button data-structure="section" title="Create a named function section">Section</button>
-        <button data-structure="repeat" title="Create a counted repeat">Repeat</button>
+        <button data-structure="repeat" title="Create a counted or conditional repeat">Repeat</button>
         <button data-structure="volta" title="Create true/false volta endings">Volta</button>
         <button data-structure="array" title="Create a horizontal Array phrase">Array</button>
         <button data-structure="struct" title="Create a vertical Struct group">Struct</button>
@@ -59,7 +59,7 @@
 
     <main class="editor-area">
       <div class="editor-tabs">
-        <button class="editor-tab active"><svg><use href="#i-music"/></svg><span id="tabTitle">calculator.codetta</span><span class="tab-close">×</span></button>
+        <button class="editor-tab active" id="scoreTab"><svg><use href="#i-music"/></svg><span id="tabTitle">calculator.codetta</span><span class="tab-close">×</span></button>
         <div class="tab-actions">
           <button id="toggleSource" title="Toggle source pane"><svg><use href="#i-columns"/></svg></button>
           <button id="moreButton" title="More actions">•••</button>
@@ -147,10 +147,10 @@
 
       <footer class="statusbar">
         <button class="status-primary" id="syncStatus"><svg><use href="#i-check"/></svg><span>Synced</span></button>
-        <button><svg><use href="#i-branch"/></svg><span>main*</span></button>
+        <button id="workspaceStatus"><svg><use href="#i-branch"/></svg><span>Local</span></button>
         <span class="status-spacer"></span>
         <button id="problemsStatus"><svg><use href="#i-error"/></svg><span>0</span><svg><use href="#i-warning"/></svg><span>0</span></button>
-        <button><span id="languageVersion">Codetta v0.1</span></button>
+        <button id="languageStatus"><span id="languageVersion">Codetta v0.1</span></button>
         <button id="resultStatus" class="result-status"><span>result:</span><strong>—</strong></button>
         <button id="playButton"><svg><use href="#i-play"/></svg><span>Run score</span></button>
       </footer>
@@ -168,6 +168,8 @@
       <button data-command="run"><span>Run / play score</span><kbd>F5</kbd></button>
       <button data-command="toggle-source"><span>View: Toggle source pane</span><kbd>Ctrl J</kbd></button>
       <button data-command="debug"><span>View: Toggle debug overlay</span></button>
+      <button data-command="undo"><span>Edit: Undo score change</span><kbd>Ctrl Z</kbd></button>
+      <button data-command="redo"><span>Edit: Redo score change</span><kbd>Ctrl Y</kbd></button>
     </div>
   </dialog>
 

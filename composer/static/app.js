@@ -685,18 +685,25 @@
     toast(debug ? "Debug overlay enabled" : "Debug overlay hidden", debug ? "Semantic groups are annotated on a separate rendering layer." : "The score is back in normal notation mode.");
   }
 
-  function showCommands() {
+  function showCommands(query = "") {
     const dialog = $("#commandDialog");
     dialog.showModal();
-    $("#commandInput").value = "";
-    $$(".command-list button").forEach(button => button.hidden = false);
+    $("#commandInput").value = query;
+    const normalized = query.toLowerCase();
+    $$(".command-list button").forEach(button =>
+      button.hidden = Boolean(normalized) && !button.textContent.toLowerCase().includes(normalized));
     $("#commandInput").focus();
   }
 
   function runCommand(command) {
     $("#commandDialog").close();
     ({save: saveFile, open: () => $("#fileInput").click(), run: play,
-      "toggle-source": toggleSource, debug: toggleDebug})[command]?.();
+      "toggle-source": toggleSource, debug: toggleDebug, undo, redo})[command]?.();
+  }
+
+  function focusScore() {
+    $("#scoreScroll").focus();
+    $("#scoreScroll").scrollIntoView({block: "nearest"});
   }
 
   editor.addEventListener("input", scheduleSync);
@@ -716,6 +723,22 @@
     }
   });
   $$(".source-tabs button").forEach(button => button.addEventListener("click", () => switchMode(button.dataset.mode)));
+  $$(".menubar button").forEach(button => button.addEventListener("click", () => {
+    if (button.dataset.menu === "run") play();
+    else showCommands(button.dataset.menu === "edit" ? "Edit:" : button.dataset.menu === "view" ? "View:" : "");
+  }));
+  $$(".activitybar button").forEach(button => button.addEventListener("click", () => {
+    $$(".activitybar button").forEach(item => item.classList.toggle("active", item === button));
+    const activity = button.dataset.activity;
+    if (activity === "explorer") {
+      $("#sidebar").scrollTo({top: 0, behavior: "smooth"});
+      toast("Explorer", "The open score and v0.2 Program Structure are shown in the sidebar.");
+    }
+    else if (activity === "search") showCommands();
+    else if (activity === "source") toast("Local document", "Save creates a .codetta file; Git operations stay in your normal development tools.");
+    else if (activity === "extensions") toast("No extensions installed", "Composer v0.2 currently uses its built-in notation tools.");
+    else toast("Composer settings", "Loop limits can be set with --max-iterations when launching Composer.");
+  }));
   const structureCommands = {voice: addVoice, value: addValue, rename: renameVoice, section: addSection,
     repeat: addRepeat, volta: addVolta, array: addArray, struct: addStruct, call: addCall};
   $$("#structureActions button").forEach(button => button.addEventListener("click", () =>
@@ -753,7 +776,21 @@
     } else toast("Input duration", selected ? "Tied values are respelled safely from the Python pane." : "Select an untied note first.");
   }));
   $("#fileInput").addEventListener("change", event => openFile(event.target.files[0]));
-  $("#commandTitle").parentElement.addEventListener("click", showCommands);
+  $("#scoreFile").addEventListener("click", focusScore);
+  $("#scoreTab").addEventListener("click", focusScore);
+  $("#explorerMore").addEventListener("click", () => showCommands());
+  $("#moreButton").addEventListener("click", () => showCommands());
+  $("#syncStatus").addEventListener("click", () => toast(
+    invalid[mode] ? "Draft has a problem" : "Views synchronized",
+    diagnosticText.textContent));
+  $("#workspaceStatus").addEventListener("click", () => toast("Local workspace", "Changes remain local until you save the .codetta document."));
+  $("#problemsStatus").addEventListener("click", () => toast(
+    diagnosticBar.classList.contains("error") ? "1 problem" : "No problems",
+    diagnosticText.textContent));
+  $("#languageStatus").addEventListener("click", () => toast(
+    $("#languageVersion").textContent,
+    isV02() ? "Musical structures are editable in Program Structure." : "Enter a v0.2 program in Python to enable structural editing."));
+  $("#commandTitle").parentElement.addEventListener("click", () => showCommands());
   $("#commandInput").addEventListener("input", event => {
     const query = event.target.value.toLowerCase();
     $$(".command-list button").forEach(button => button.hidden = !button.textContent.toLowerCase().includes(query));
