@@ -16,10 +16,10 @@ from codetta.score_model import Score
 from codetta.score_parser import parse_score
 from codetta.semantic_analyzer import analyze
 from codetta.serialization import dumps, loads, read_score
-from codetta.semantics import CodettaError
+from codetta.semantics import CodettaError, format_value
 from composer.projection import emit_python, parse_python
 from conductor.compiler import compile_ast, compile_expression
-from performer.evaluator import evaluate
+from performer.evaluator import TraceEvent, evaluate_with_trace
 from performer.player import plan, write_wav
 from rendering.renderer import RenderOptions, render_score
 
@@ -30,7 +30,9 @@ MAX_REQUEST = 5 * 1024 * 1024
 
 
 def _value(value: Fraction) -> str:
-    return str(value.numerator) if value.denominator == 1 else f"{value.numerator}/{value.denominator}"
+    if isinstance(value, Fraction):
+        return str(value.numerator) if value.denominator == 1 else f"{value.numerator}/{value.denominator}"
+    return format_value(value)
 
 
 @dataclass
@@ -41,26 +43,30 @@ class Snapshot:
     svg: str
     debug_svg: str
     result: str
+    value: object
+    trace: tuple[TraceEvent, ...]
 
 
 class ComposerApplication:
-    def __init__(self, score: Score):
+    def __init__(self, score: Score, *, max_iterations: int = 10_000):
         self.lock = threading.RLock()
         self.latest_revision = 0
+        self.max_iterations = max_iterations
         self.snapshot = self._build(score)
 
     @classmethod
-    def open(cls, path: Path | None = None) -> "ComposerApplication":
+    def open(cls, path: Path | None = None, *, max_iterations: int = 10_000) -> "ComposerApplication":
         if path is not None:
-            return cls(read_score(path))
+            return cls(read_score(path), max_iterations=max_iterations)
         example = ROOT / "examples" / "calculator" / "program.codetta"
-        return cls(read_score(example) if example.exists() else compile_expression("(3 + 5) * 2"))
+        return cls(read_score(example) if example.exists() else compile_expression("(3 + 5) * 2"),
+                   max_iterations=max_iterations)
 
-    @staticmethod
-    def _build(score: Score) -> Snapshot:
+    def _build(self, score: Score) -> Snapshot:
         syntax = parse_score(score)
         execution = analyze(syntax)
-        result = evaluate(execution)
+        evaluation = evaluate_with_trace(execution, max_iterations=self.max_iterations)
+        result = evaluation.value
         # Composer uses a compact canvas rather than a print page.  Grow the
         # viewport with the measure so Verovio never has to squeeze a long,
         # single-measure program into an invalid system.
@@ -70,7 +76,8 @@ class ComposerApplication:
         options = RenderOptions(page_width=page_width, page_height=900, scale=60)
         normal = "\n".join(render_score(score, options).pages)
         debug = "\n".join(render_score(score, options, debug=True).pages)
-        return Snapshot(score, emit_python(syntax), dumps(score), normal, debug, _value(result))
+        return Snapshot(score, emit_python(syntax), dumps(score), normal, debug, _value(result),
+                        result, evaluation.trace)
 
     def payload(self, revision: int = 0) -> dict[str, Any]:
         with self.lock:
@@ -115,7 +122,7 @@ class ComposerApplication:
     def audio(self) -> bytes:
         with self.lock:
             snapshot = self.snapshot
-        performance = plan(snapshot.score, Fraction(snapshot.result))
+        performance = plan(snapshot.score, snapshot.value, trace=snapshot.trace)
         with tempfile.TemporaryDirectory(prefix="codetta-composer-") as folder:
             path = write_wav(performance, Path(folder) / "preview.wav", bpm=120)
             return path.read_bytes()

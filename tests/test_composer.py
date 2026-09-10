@@ -34,8 +34,37 @@ class ComposerProjectionTests(unittest.TestCase):
         rejected = (
             "import os\nresult = 1",
             "result = open('secret')",
-            "result = thing.attribute",
+            "result = __import__('os')",
             "for item in items:\n    result = item",
+        )
+        for source in rejected:
+            with self.subTest(source=source), self.assertRaises(CodettaError):
+                parse_python(source)
+
+    def test_v02_python_projection_is_safe_and_round_trips(self):
+        source = """def process(values):
+    total = 0
+    for i in range(len(values)):
+        x = values[i]
+        if x > 3:
+            total = total + x
+    return total
+
+values = [1, 2, 4, 6]
+result = process(values)
+"""
+        program = parse_python(source)
+        self.assertEqual(program.language_version, "0.2")
+        self.assertEqual(evaluate(analyze(program)), 10)
+        emitted = emit_python(program)
+        self.assertEqual(evaluate(analyze(parse_python(emitted))), 10)
+
+    def test_v02_rejects_unsafe_statements_and_calls(self):
+        rejected = (
+            "result = open('secret')",
+            "import os\nresult = 1",
+            "for x in values:\n    result = x",
+            "result = thing.method()",
         )
         for source in rejected:
             with self.subTest(source=source), self.assertRaises(CodettaError):
@@ -64,6 +93,29 @@ class ComposerApplicationTests(unittest.TestCase):
         self.assertTrue(changed["relaid"])
         restored = application.sync_json(original, 2)
         self.assertEqual(restored["result"], "16")
+
+    def test_v02_program_commits_and_exposes_notation_structures(self):
+        from composer.server import ComposerApplication
+
+        application = ComposerApplication.open()
+        changed = application.sync_python("""def keep_large(values):
+    total = 0
+    for i in range(len(values)):
+        value = values[i]
+        if value > 2:
+            total = total + value
+    return total
+
+values = [1, 3, 5]
+result = keep_large(values)
+""", 1)
+        self.assertEqual(changed["result"], "8")
+        self.assertEqual(changed["score"]["language_version"], "0.2")
+        notation = changed["score"]["score"]
+        self.assertTrue(notation["sections"])
+        self.assertTrue(notation["repeats"])
+        self.assertTrue(notation["voltas"])
+        self.assertTrue(application.audio())
 
 
 if __name__ == "__main__":

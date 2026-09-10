@@ -6,7 +6,7 @@ Codettaは、**通常の五線譜そのものを構文として使うビジュ�
 
 CodettaはMusicXMLを独自解釈する仕組みではありません。Composer上に表示される五線譜が、Scratchのブロックに相当する標準視覚構文です。
 
-`.codetta`は五線譜の構造を保存する正式なファイル形式です。v0.1ではJSONを使用しますが、JSON自体をユーザー向けのソース構文とはみなしません。
+`.codetta`は五線譜の構造を保存する正式なファイル形式です。JSONを使用しますが、JSON自体をユーザー向けのソース構文とはみなしません。
 
 ```text
 五線譜        = Codettaの標準視覚構文
@@ -18,7 +18,7 @@ MusicXML      = 外部楽譜ソフトとの交換形式
 
 ## 開発状況
 
-`develop`ブランチにはCodetta v0.1の実行系とローカルWeb IDEのComposerを実装しています。
+`enhancement/v0.2`ブランチでは、v0.1の四則演算との互換性を維持しながら、基本的なプログラムを記述・実行できるv0.2を実装しています。
 
 - 正式なCodetta Score Modelと`.codetta` JSON Serialization
 - Score ModelからASTを導出するScore Parser / Semantic Analyzer
@@ -29,6 +29,12 @@ MusicXML      = 外部楽譜ソフトとの交換形式
 - Verovioによる通常五線譜のSVG / HTMLレンダリング
 - 五線譜、Python、`.codetta` JSONを同期するComposer
 - `(3 + 5) * 2`を16として実行・表示・再生するcalculator example
+- Voiceによる変数、Int / Float / Bool、Array / Structとアクセス
+- voltaによるif / else、counted / conditional repeatによるfor / while
+- 名前付きsection、引数Voice、return Voice、section参照による関数呼び出し
+- v0.2 Score Model → AST → typed IR → Performerの分離された実行経路
+- 実際に選択されたbranch、repeat回数、function callを反映する楽譜再生
+- `process([1, 2, 4, 6]) == 10`を保存・再読込・実行・演奏・MusicXML Exportするv0.2 example
 
 旧実行用SVGと旧IRの互換経路は削除し、Score Model中心の構成へ統一しました。MusicXML Importは今後の実装範囲です。
 
@@ -76,6 +82,20 @@ Codetta Score Model ↔ JSON Serialization → ComposerのJSONペイン
 ```
 
 Score Modelを唯一の**確定済みドキュメント状態**とします。五線譜、Python、JSONの各ペインはScore Modelの異なる投影です。レンダリング済みSVG、MusicXML、AST、IRをComposerの確定状態にはしません。編集中でまだ検証に成功していないPythonまたはJSONだけは、各テキストエディタの一時Draftとして保持します。
+
+## Codetta v0.2を試す
+
+Windowsでは`Codetta Composer.cmd`をダブルクリックします。v0.2の受入サンプルを直接開く場合は、`examples/v02/program.codetta`をランチャーへドラッグ＆ドロップできます。右側のPythonペインにv0.2コードを入力しても、検証後に通常の楽譜へ再配置されます。
+
+```powershell
+# v0.2の全成果物を再生成（結果は10）
+.\.venv\Scripts\python.exe .\examples\v02\demo.py
+
+# 保存済み楽譜を実行し、実際の演奏順を表示
+.\.venv\Scripts\python.exe -m performer .\examples\v02\program.codetta --no-play --trace
+```
+
+ComposerのProgram StructureではVoiceの作成・改名、値の配置、section、counted / conditional repeat、volta、Array phrase、Struct group、function callを編集できます。Debug ModeではVoice・scope・branch・loop・data relationの補助表示を通常譜面とは分離して重ねます。詳細な言語設計は[Codetta v0.2 implementation plan](docs/plan/codetta-v0.2-implementation-plan.md)を参照してください。
 
 ## Codetta v0.1 Language Specification
 

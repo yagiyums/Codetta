@@ -21,16 +21,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--wav", type=Path, help="Export the notated performance as WAV")
     parser.add_argument("--bpm", type=int, default=120)
     parser.add_argument("--max-seconds", type=int, default=300)
+    parser.add_argument("--max-iterations", type=int, default=10_000,
+                        help="Stop runaway loops after this many iterations")
+    parser.add_argument("--max-steps", type=int, default=100_000,
+                        help="Stop execution after this many IR steps")
     parser.add_argument("--trace", action="store_true", help="List the notes in performance order")
     args = parser.parse_args(argv)
     if args.score.suffix.lower() != ".codetta":
         parser.error("Performer input must be a .codetta file")
-    if args.bpm <= 0 or args.max_seconds <= 0:
-        parser.error("--bpm and --max-seconds must be positive integers")
+    if min(args.bpm, args.max_seconds, args.max_iterations, args.max_steps) <= 0:
+        parser.error("tempo, duration and execution limits must be positive integers")
     try:
-        executed = run(args.score)
+        executed = run(args.score, max_iterations=args.max_iterations, max_steps=args.max_steps)
         if not args.no_play or args.wav or args.trace:
-            performance = plan(executed.score, executed.value)
+            performance = plan(executed.score, executed.value, trace=executed.trace)
             if args.trace:
                 for sound in performance.sounds:
                     _trace(sound)

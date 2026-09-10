@@ -13,9 +13,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("file", nargs="?", type=Path, help="Optional .codetta file to open")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8765)
+    parser.add_argument("--max-iterations", type=int, default=10_000,
+                        help="Stop runaway loops after this many iterations")
     parser.add_argument("--no-browser", action="store_true")
     args = parser.parse_args(argv)
-    app = ComposerApplication.open(args.file)
+    if args.max_iterations <= 0:
+        parser.error("--max-iterations must be positive")
+    app = ComposerApplication.open(args.file, max_iterations=args.max_iterations)
     server = serve(app, args.host, args.port)
     url = f"http://{args.host}:{server.server_port}"
     print(f"Codetta Composer is running at {url} (Ctrl+C to stop)")

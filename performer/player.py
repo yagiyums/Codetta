@@ -11,8 +11,9 @@ import sys
 import tempfile
 import wave
 
-from codetta.score_model import Chord, Note, Score, validate_score
+from codetta.score_model import Chord, Cue, Note, Score, validate_score
 from codetta.semantics import CodettaError
+from performer.evaluator import TraceEvent
 
 SAMPLE_RATE = 44_100
 DEFAULT_MAX_SECONDS = 300
@@ -31,11 +32,102 @@ class Sound:
 @dataclass(frozen=True)
 class Performance:
     sounds: tuple[Sound, ...]
-    result: Fraction
+    result: object
     beats: Fraction
 
 
-def plan(score: Score, result: Fraction) -> Performance:
+class _TraceCursor:
+    def __init__(self, events: tuple[TraceEvent, ...]):
+        self.events = events
+        self.index = 0
+
+    def take(self, kind: str, name: str | None = None) -> TraceEvent | None:
+        if self.index >= len(self.events):
+            return None
+        event = self.events[self.index]
+        if event.kind != kind or (name is not None and event.name != name):
+            return None
+        self.index += 1
+        return event
+
+
+def _execution_order(score: Score, trace: tuple[TraceEvent, ...]) -> tuple[int, ...]:
+    if score.language_version != "0.2" or not trace:
+        return ()
+    measures = score.parts[0].staves[0].measures
+    indexes = {measure.id: index for index, measure in enumerate(measures)}
+    event_index = {}
+    voice_event_indexes: dict[str, set[int]] = {}
+    for staff in score.parts[0].staves:
+        for index, measure in enumerate(staff.measures):
+            for voice in measure.voices:
+                if voice.events:
+                    voice_event_indexes.setdefault(voice.id, set()).add(index)
+                for event in voice.events:
+                    event_index[event.id] = index
+    sections = {item.id: item for item in score.sections}
+    section_ranges = [(indexes[item.start_measure], indexes[item.end_measure])
+                      for item in score.sections]
+    repeats_at = {indexes[item.start_measure]: item for item in score.repeats}
+    voltas_at = {}
+    for item in score.voltas:
+        locations = sorted(voice_event_indexes.get(item.condition_voice_id, ()))
+        if len(locations) == 1:
+            voltas_at[locations[0]] = item
+    calls_at: dict[int, list[object]] = {}
+    for item in score.section_references:
+        calls_at.setdefault(event_index[item.anchor], []).append(item)
+    cursor = _TraceCursor(trace)
+    call_stack: set[str] = set()
+
+    def walk(first: int, last: int, ignored: frozenset[str] = frozenset()) -> list[int]:
+        result = []
+        index = first
+        while index <= last:
+            repeat = repeats_at.get(index)
+            if repeat is not None and repeat.id not in ignored:
+                ending = indexes[repeat.end_measure]
+                loop = cursor.take("loop")
+                count = int(loop.value) if loop is not None else (repeat.times or 1)
+                for _ in range(count):
+                    result.extend(walk(index, ending, ignored | {repeat.id}))
+                index = ending + 1
+                continue
+            volta = voltas_at.get(index)
+            if volta is not None and volta.id not in ignored:
+                result.append(index)
+                branch = cursor.take("branch")
+                selected_number = 1 if branch is None or branch.value else 2
+                selected = next((item for item in volta.endings
+                                 if selected_number in item.numbers), None)
+                if selected is not None:
+                    result.extend(walk(indexes[selected.start_measure], indexes[selected.end_measure],
+                                       ignored | {volta.id}))
+                index = max(indexes[item.end_measure] for item in volta.endings) + 1
+                continue
+            for reference in calls_at.get(index, ()):
+                section = sections[reference.section_id]
+                call = cursor.take("call", section.name)
+                if call is not None and section.id not in call_stack:
+                    call_stack.add(section.id)
+                    result.extend(walk(indexes[section.start_measure], indexes[section.end_measure]))
+                    call_stack.remove(section.id)
+            result.append(index)
+            index += 1
+        return result
+
+    order = []
+    index = 0
+    for first, last in sorted(section_ranges):
+        if index < first:
+            order.extend(walk(index, first - 1))
+        index = max(index, last + 1)
+    if index < len(measures):
+        order.extend(walk(index, len(measures) - 1))
+    return tuple(order)
+
+
+def plan(score: Score, result: object, *, trace: tuple[TraceEvent, ...] = ()) -> Performance:
     validate_score(score)
     part = score.parts[0]
     tie_next = {spanner.start_anchor: spanner.end_anchor for spanner in score.spanners
@@ -52,6 +144,9 @@ def plan(score: Score, result: Fraction) -> Performance:
                     start = offset + event.start * 4
                     if isinstance(event, Note):
                         notes[event.id] = (event, start, staff_number, voice_number)
+                    elif isinstance(event, Cue):
+                        sounds.append(Sound(start, event.duration * 4, (event.pitch.midi,),
+                                            (event.id,), staff_number, voice_number))
                     elif isinstance(event, Chord):
                         sounds.append(Sound(start, event.duration * 4,
                                             tuple(pitch.midi for pitch in event.pitches),
@@ -77,6 +172,23 @@ def plan(score: Score, result: Fraction) -> Performance:
             current = tie_next.get(current, "")
         sounds.append(Sound(start, duration, (note.pitch.midi,), tuple(ids), staff, voice))
     sounds.sort(key=lambda sound: (sound.start, sound.staff, sound.voice, sound.event_ids))
+    order = _execution_order(score, trace)
+    if order:
+        capacity = part.staves[0].measures[0].duration * 4
+        by_measure: dict[int, list[Sound]] = {}
+        for sound in sounds:
+            index = int(sound.start // capacity)
+            by_measure.setdefault(index, []).append(sound)
+        scheduled = []
+        cursor = Fraction(0)
+        for index in order:
+            for sound in by_measure.get(index, ()):
+                relative = sound.start - capacity * index
+                scheduled.append(Sound(cursor + relative, sound.beats, sound.pitches,
+                                       sound.event_ids, sound.staff, sound.voice))
+            cursor += capacity
+        sounds = scheduled
+        total = cursor
     return Performance(tuple(sounds), result, total)
 
 

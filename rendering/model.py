@@ -5,7 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction
 
-from codetta.score_model import Chord, Note, Rest, Score, validate_score
+from codetta.score_model import Chord, Cue, Note, Rest, Score, validate_score
 from codetta.semantics import CodettaError
 
 
@@ -34,6 +34,7 @@ class DisplayNote:
     spellings: tuple[tuple[str, int, int], ...] = ()
     accidental: str | None = None
     stem: str | None = None
+    cue: bool = False
 
 
 @dataclass(frozen=True)
@@ -81,7 +82,7 @@ def from_score(score: Score) -> DisplayScore:
                     start = offset + event.start * 4
                     duration = event.duration * 4
                     event_positions[event.id] = (start, start + duration, staff_number)
-                    if isinstance(event, Note):
+                    if isinstance(event, (Note, Cue)):
                         pitches = (event.pitch.midi,)
                         spellings = ((event.pitch.step, event.pitch.alter, event.pitch.octave),)
                         accidental, stem = event.accidental, event.stem
@@ -97,7 +98,7 @@ def from_score(score: Score) -> DisplayScore:
                         raise TypeError(f"Unsupported event {type(event).__name__}")
                     notes.append(DisplayNote(start, duration, pitches, staff_number, voice_number,
                                              event.id, event.id in tied_from, event.id in tied_to,
-                                             spellings, accidental, stem))
+                                             spellings, accidental, stem, isinstance(event, Cue)))
     scopes = []
     for spanner in score.spanners:
         if spanner.type == "tie":

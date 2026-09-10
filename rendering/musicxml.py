@@ -125,7 +125,11 @@ def _marks(score: DisplayScore, pieces: list[_Piece], *, debug: bool):
         if not starts or not ends:
             raise CodettaError(f"Cannot locate spanner anchors for {scope.identifier}")
         first, last = starts[0], ends[-1]
-        if scope.kind == "slur" and first.identifier != last.identifier:
+        # MusicXML slurs require temporal order.  A v0.2 vertical relation can
+        # join simultaneous Voices, so spell that case as a direction bracket
+        # with open ends instead of emitting an invalid zero-time slur.
+        if (scope.kind == "slur" and first.identifier != last.identifier
+                and first.start < last.start):
             number = scope.depth % 16 + 1
             slurs.setdefault(first.identifier, []).append({"type": "start", "number": number,
                                                           "placement": "above",
@@ -222,6 +226,8 @@ def display_to_musicxml(score: DisplayScore, *, debug: bool = False) -> str:
                     note = _el(measure, "note", id=piece.identifier + (f"-ch{chord_index}" if chord_index else ""))
                     if chord_index:
                         _el(note, "chord")
+                    if event.cue:
+                        _el(note, "cue")
                     if midi is None:
                         _el(note, "rest")
                     else:
@@ -263,7 +269,95 @@ def display_to_musicxml(score: DisplayScore, *, debug: bool = False) -> str:
 
 
 def to_musicxml(score: Score, *, debug: bool = False) -> str:
-    return display_to_musicxml(from_score(score), debug=debug)
+    source = display_to_musicxml(from_score(score), debug=debug)
+    if score.language_version != "0.2":
+        return source
+    return _apply_v02_structure(score, source, debug=debug)
+
+
+def _apply_v02_structure(score: Score, source: str, *, debug: bool) -> str:
+    """Project native section/repeat/volta structures to standard MusicXML."""
+    root = ET.fromstring(source)
+    part = root.find("part")
+    if part is None:
+        raise CodettaError("Rendered MusicXML has no part")
+    measures = list(part.findall("measure"))
+    source_measures = score.parts[0].staves[0].measures
+    indexes = {measure.id: index for index, measure in enumerate(source_measures)}
+    event_indexes = {}
+    for staff in score.parts[0].staves:
+        for index, measure in enumerate(staff.measures):
+            for voice in measure.voices:
+                for event in voice.events:
+                    event_indexes[event.id] = index
+
+    def barline(index: int, location: str) -> ET.Element:
+        measure = measures[index]
+        existing = next((item for item in measure.findall("barline")
+                         if item.get("location", "right") == location), None)
+        if existing is not None:
+            return existing
+        return _el(measure, "barline", location=location)
+
+    def direction(index: int, text: str, *, rehearsal: bool = False) -> None:
+        item = _el(measures[index], "direction", placement="above")
+        kind = _el(item, "direction-type")
+        _el(kind, "rehearsal" if rehearsal else "words", text,
+            **({"enclosure": "square"} if rehearsal else {"font_size": 8}))
+
+    for section in score.sections:
+        direction(indexes[section.start_measure],
+                  f"{section.rehearsal_mark}  {section.name}", rehearsal=True)
+        if debug:
+            params = ", ".join(section.parameter_voice_ids) or "—"
+            returns = ", ".join(section.return_voice_ids) or "Void"
+            direction(indexes[section.start_measure], f"Function · params {params} · return {returns}")
+    sections = {item.id: item for item in score.sections}
+    for reference in score.section_references:
+        section = sections[reference.section_id]
+        direction(event_indexes[reference.anchor],
+                  f"To {section.rehearsal_mark} · {section.name}")
+    for repeat in score.repeats:
+        first, last = indexes[repeat.start_measure], indexes[repeat.end_measure]
+        _el(barline(first, "left"), "repeat", direction="forward")
+        attributes = {"direction": "backward"}
+        if repeat.times is not None:
+            attributes["times"] = repeat.times
+        _el(barline(last, "right"), "repeat", **attributes)
+        if debug:
+            mode = "While" if repeat.condition_voice_id else "For"
+            direction(first, f"{mode} · iteration region")
+    for volta in score.voltas:
+        for ending in volta.endings:
+            first, last = indexes[ending.start_measure], indexes[ending.end_measure]
+            number = ",".join(map(str, ending.numbers))
+            _el(barline(first, "left"), "ending", number=number, type="start")
+            _el(barline(last, "right"), "ending", number=number, type="stop")
+        if debug:
+            first = min(indexes[item.start_measure] for item in volta.endings)
+            direction(first, f"Branch · condition Voice {volta.condition_voice_id}")
+    if debug:
+        first_voice_event: dict[str, int] = {}
+        for staff in score.parts[0].staves:
+            for index, measure in enumerate(staff.measures):
+                for voice in measure.voices:
+                    if voice.name and voice.events:
+                        first_voice_event.setdefault(voice.id, index)
+        voices = {voice.id: voice for staff in score.parts[0].staves
+                  for measure in staff.measures for voice in measure.voices}
+        for voice_id, index in first_voice_event.items():
+            direction(index, f"Voice · {voices[voice_id].name}")
+        for relation in score.relations:
+            direction(event_indexes[relation.output_anchor],
+                      f"Data relation · {relation.connector}")
+        for phrase in score.phrases:
+            direction(event_indexes[phrase.output_anchor], "Array phrase")
+        for group in score.voice_groups:
+            if group.output_anchor is None:
+                continue
+            direction(event_indexes[group.output_anchor], f"Struct · {group.name}")
+    ET.indent(root)
+    return ET.tostring(root, encoding="unicode", xml_declaration=True)
 
 
 def write_musicxml(score: Score, path: str | Path, *, debug: bool = False) -> Path:

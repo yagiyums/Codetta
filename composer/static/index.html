@@ -37,6 +37,19 @@
         <button data-focus="score"><svg><use href="#i-score"/></svg><span>Score</span><em>visual syntax</em></button>
         <button data-focus="source"><svg><use href="#i-code"/></svg><span>Source</span><em>Python projection</em></button>
       </div>
+      <div class="outline-heading structure-heading"><svg><use href="#i-chevron"/></svg><span>PROGRAM STRUCTURE</span></div>
+      <div class="structure-tree" id="structureTree"><p>Open or create a Codetta v0.2 score to edit its structure.</p></div>
+      <div class="structure-actions" id="structureActions" aria-label="Codetta v0.2 structure tools">
+        <button data-structure="voice" title="Create a named Voice">+ Voice</button>
+        <button data-structure="value" title="Place an Int value on the selected Voice">+ Value</button>
+        <button data-structure="rename" title="Rename the selected Voice">Rename</button>
+        <button data-structure="section" title="Create a named function section">Section</button>
+        <button data-structure="repeat" title="Create a counted repeat">Repeat</button>
+        <button data-structure="volta" title="Create true/false volta endings">Volta</button>
+        <button data-structure="array" title="Create a horizontal Array phrase">Array</button>
+        <button data-structure="struct" title="Create a vertical Struct group">Struct</button>
+        <button data-structure="call" title="Create a section reference call">Call</button>
+      </div>
       <div class="getting-started">
         <div class="tip-mark">⌘</div>
         <strong>Two views, one program</strong>
@@ -137,7 +150,7 @@
         <button><svg><use href="#i-branch"/></svg><span>main*</span></button>
         <span class="status-spacer"></span>
         <button id="problemsStatus"><svg><use href="#i-error"/></svg><span>0</span><svg><use href="#i-warning"/></svg><span>0</span></button>
-        <button><span>Codetta v0.1</span></button>
+        <button><span id="languageVersion">Codetta v0.1</span></button>
         <button id="resultStatus" class="result-status"><span>result:</span><strong>—</strong></button>
         <button id="playButton"><svg><use href="#i-play"/></svg><span>Run score</span></button>
       </footer>

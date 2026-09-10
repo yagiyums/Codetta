@@ -238,6 +238,9 @@ def _parse_measure(score: Score, measure_number: int) -> ast.Block:
 
 def parse_score(score: Score) -> ast.Program:
     validate_score(score)
+    if score.language_version == "0.2":
+        from codetta.v02_score_parser import parse_score as parse_v02_score
+        return parse_v02_score(score)
     for staff in score.parts[0].staves:
         for index, measure in enumerate(staff.measures):
             expected = "light-heavy" if index == len(staff.measures) - 1 else "regular"

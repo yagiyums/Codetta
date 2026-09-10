@@ -1,0 +1,2744 @@
+<?xml version='1.0' encoding='utf-8'?>
+<score-partwise version="4.0">
+  <work>
+    <work-title>Codetta v0.2 process demo</work-title>
+  </work>
+  <identification>
+    <encoding>
+      <software>Codetta</software>
+    </encoding>
+  </identification>
+  <part-list>
+    <score-part id="P1">
+      <part-name />
+    </score-part>
+  </part-list>
+  <part id="P1">
+    <measure number="1">
+      <attributes>
+        <divisions>8</divisions>
+        <key>
+          <fifths>0</fifths>
+        </key>
+        <time>
+          <beats>13</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <staves>4</staves>
+        <part-symbol top-staff="1" bottom-staff="4">bracket</part-symbol>
+        <clef number="1">
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <clef number="2">
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <clef number="3">
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+        <clef number="4">
+          <sign>G</sign>
+          <line>2</line>
+        </clef>
+      </attributes>
+      <note id="n-s1-v1-m1-1">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m1-2">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m1-3">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m1-4">
+        <rest />
+        <duration>8</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s1-v2-m1-1">
+        <rest />
+        <duration>8</duration>
+        <voice>2</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m1-2">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m1-3">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m1-4">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s1-v4-m1-1">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m1-2">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m1-3">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m1-4">
+        <rest />
+        <duration>8</duration>
+        <voice>4</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v1-m1-1">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m1-2">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m1-3">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m1-4">
+        <rest />
+        <duration>8</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v2-m1-1">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m1-2">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m1-3">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m1-4">
+        <rest />
+        <duration>8</duration>
+        <voice>6</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v3-m1-1">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m1-2">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m1-3">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m1-4">
+        <rest />
+        <duration>8</duration>
+        <voice>7</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v4-m1-1">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m1-2">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m1-3">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m1-4">
+        <rest />
+        <duration>8</duration>
+        <voice>8</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v1-m1-1">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m1-2">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m1-3">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m1-4">
+        <rest />
+        <duration>8</duration>
+        <voice>9</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v2-m1-1">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m1-2">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m1-3">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m1-4">
+        <rest />
+        <duration>8</duration>
+        <voice>10</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v3-m1-1">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m1-2">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m1-3">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m1-4">
+        <rest />
+        <duration>8</duration>
+        <voice>11</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v4-m1-1">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m1-2">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m1-3">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m1-4">
+        <rest />
+        <duration>8</duration>
+        <voice>12</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s4-v1-m1-1">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m1-2">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m1-3">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m1-4">
+        <rest />
+        <duration>8</duration>
+        <voice>13</voice>
+        <type>quarter</type>
+        <staff>4</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s4-v2-m1-1">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m1-2">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m1-3">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m1-4">
+        <rest />
+        <duration>8</duration>
+        <voice>14</voice>
+        <type>quarter</type>
+        <staff>4</staff>
+      </note>
+      <direction placement="above">
+        <direction-type>
+          <rehearsal enclosure="square">A  process</rehearsal>
+        </direction-type>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8">Function · params voice-1 · return voice-2</words>
+        </direction-type>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8">Voice · total</words>
+        </direction-type>
+      </direction>
+    </measure>
+    <measure number="2">
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=1</words>
+        </direction-type>
+        <offset>0</offset>
+        <staff>1</staff>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=1</words>
+        </direction-type>
+        <offset>0</offset>
+        <staff>2</staff>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=1</words>
+        </direction-type>
+        <offset>0</offset>
+        <staff>2</staff>
+      </direction>
+      <note id="n-s1-v1-m2-1">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m2-2">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m2-3">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m2-4">
+        <rest />
+        <duration>8</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s1-v2-m2-1">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m2-2">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m2-3">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m2-4">
+        <rest />
+        <duration>8</duration>
+        <voice>2</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s1-v4-m2-1">
+        <pitch>
+          <step>F</step>
+          <alter>1</alter>
+          <octave>3</octave>
+        </pitch>
+        <duration>8</duration>
+        <voice>4</voice>
+        <type>quarter</type>
+        <accidental>sharp</accidental>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m2-2">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m2-3">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m2-4">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v1-m2-1">
+        <cue />
+        <pitch>
+          <step>G</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>8</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m2-2">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m2-3">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m2-4">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v2-m2-1">
+        <cue />
+        <pitch>
+          <step>A</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>8</duration>
+        <voice>6</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m2-2">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m2-3">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m2-4">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v3-m2-1">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m2-2">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m2-3">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m2-4">
+        <rest />
+        <duration>8</duration>
+        <voice>7</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v4-m2-1">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m2-2">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m2-3">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m2-4">
+        <rest />
+        <duration>8</duration>
+        <voice>8</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v1-m2-1">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m2-2">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m2-3">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m2-4">
+        <rest />
+        <duration>8</duration>
+        <voice>9</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v2-m2-1">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m2-2">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m2-3">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m2-4">
+        <rest />
+        <duration>8</duration>
+        <voice>10</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v3-m2-1">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m2-2">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m2-3">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m2-4">
+        <rest />
+        <duration>8</duration>
+        <voice>11</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v4-m2-1">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m2-2">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m2-3">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m2-4">
+        <rest />
+        <duration>8</duration>
+        <voice>12</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s4-v1-m2-1">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m2-2">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m2-3">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m2-4">
+        <rest />
+        <duration>8</duration>
+        <voice>13</voice>
+        <type>quarter</type>
+        <staff>4</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s4-v2-m2-1">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m2-2">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m2-3">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m2-4">
+        <rest />
+        <duration>8</duration>
+        <voice>14</voice>
+        <type>quarter</type>
+        <staff>4</staff>
+      </note>
+      <barline location="left">
+        <repeat direction="forward" />
+      </barline>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8">For · iteration region</words>
+        </direction-type>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8">Voice · x</words>
+        </direction-type>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8">Data relation · application</words>
+        </direction-type>
+      </direction>
+    </measure>
+    <measure number="3">
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=1</words>
+        </direction-type>
+        <offset>0</offset>
+        <staff>2</staff>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=1</words>
+        </direction-type>
+        <offset>0</offset>
+        <staff>2</staff>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=3</words>
+        </direction-type>
+        <offset>0</offset>
+        <staff>3</staff>
+      </direction>
+      <note id="n-s1-v1-m3-1">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m3-2">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m3-3">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m3-4">
+        <rest />
+        <duration>8</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s1-v2-m3-1">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m3-2">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m3-3">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m3-4">
+        <rest />
+        <duration>8</duration>
+        <voice>2</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s1-v4-m3-1">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m3-2">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m3-3">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m3-4">
+        <rest />
+        <duration>8</duration>
+        <voice>4</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v1-m3-1">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m3-2">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m3-3">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m3-4">
+        <rest />
+        <duration>8</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v2-m3-1">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m3-2">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m3-3">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m3-4">
+        <rest />
+        <duration>8</duration>
+        <voice>6</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v3-m3-1">
+        <pitch>
+          <step>B</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>8</duration>
+        <voice>7</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m3-2">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m3-3">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m3-4">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v4-m3-1">
+        <cue />
+        <pitch>
+          <step>C</step>
+          <alter>1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>8</duration>
+        <voice>8</voice>
+        <type>quarter</type>
+        <accidental>sharp</accidental>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m3-2">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m3-3">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m3-4">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v1-m3-1">
+        <pitch>
+          <step>D</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>24</duration>
+        <voice>9</voice>
+        <type>half</type>
+        <dot />
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m3-2">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m3-3">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m3-4">
+        <rest />
+        <duration>16</duration>
+        <voice>9</voice>
+        <type>half</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v2-m3-1">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m3-2">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m3-3">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m3-4">
+        <rest />
+        <duration>8</duration>
+        <voice>10</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v3-m3-1">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m3-2">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m3-3">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m3-4">
+        <rest />
+        <duration>8</duration>
+        <voice>11</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v4-m3-1">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m3-2">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m3-3">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m3-4">
+        <rest />
+        <duration>8</duration>
+        <voice>12</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s4-v1-m3-1">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m3-2">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m3-3">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m3-4">
+        <rest />
+        <duration>8</duration>
+        <voice>13</voice>
+        <type>quarter</type>
+        <staff>4</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s4-v2-m3-1">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m3-2">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m3-3">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m3-4">
+        <rest />
+        <duration>8</duration>
+        <voice>14</voice>
+        <type>quarter</type>
+        <staff>4</staff>
+      </note>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8">Voice · condition_1</words>
+        </direction-type>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8">Data relation · hairpin-diminuendo</words>
+        </direction-type>
+      </direction>
+    </measure>
+    <measure number="4">
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=1</words>
+        </direction-type>
+        <offset>0</offset>
+        <staff>1</staff>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=1</words>
+        </direction-type>
+        <offset>0</offset>
+        <staff>3</staff>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=1</words>
+        </direction-type>
+        <offset>0</offset>
+        <staff>3</staff>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="111">Sum</words>
+        </direction-type>
+        <offset>0</offset>
+        <staff>3</staff>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <bracket number="3" line-type="solid" line-end="none" default-y="45" type="start" />
+        </direction-type>
+        <offset>0</offset>
+        <staff>3</staff>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <bracket number="3" line-type="solid" line-end="none" default-y="45" type="stop" />
+        </direction-type>
+        <offset>8</offset>
+        <staff>3</staff>
+      </direction>
+      <note id="n-s1-v1-m4-1">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m4-2">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m4-3">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m4-4">
+        <rest />
+        <duration>8</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s1-v2-m4-1">
+        <pitch>
+          <step>D</step>
+          <octave>3</octave>
+        </pitch>
+        <duration>8</duration>
+        <voice>2</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m4-2">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m4-3">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m4-4">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s1-v4-m4-1">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m4-2">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m4-3">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m4-4">
+        <rest />
+        <duration>8</duration>
+        <voice>4</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v1-m4-1">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m4-2">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m4-3">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m4-4">
+        <rest />
+        <duration>8</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v2-m4-1">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m4-2">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m4-3">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m4-4">
+        <rest />
+        <duration>8</duration>
+        <voice>6</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v3-m4-1">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m4-2">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m4-3">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m4-4">
+        <rest />
+        <duration>8</duration>
+        <voice>7</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v4-m4-1">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m4-2">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m4-3">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m4-4">
+        <rest />
+        <duration>8</duration>
+        <voice>8</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v1-m4-1">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m4-2">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m4-3">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m4-4">
+        <rest />
+        <duration>8</duration>
+        <voice>9</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v2-m4-1">
+        <cue />
+        <pitch>
+          <step>E</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>8</duration>
+        <voice>10</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m4-2">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m4-3">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m4-4">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v3-m4-1">
+        <cue />
+        <pitch>
+          <step>F</step>
+          <alter>1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>8</duration>
+        <voice>11</voice>
+        <type>quarter</type>
+        <accidental>sharp</accidental>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m4-2">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m4-3">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m4-4">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v4-m4-1">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m4-2">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m4-3">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m4-4">
+        <rest />
+        <duration>8</duration>
+        <voice>12</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s4-v1-m4-1">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m4-2">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m4-3">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m4-4">
+        <rest />
+        <duration>8</duration>
+        <voice>13</voice>
+        <type>quarter</type>
+        <staff>4</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s4-v2-m4-1">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m4-2">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m4-3">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m4-4">
+        <rest />
+        <duration>8</duration>
+        <voice>14</voice>
+        <type>quarter</type>
+        <staff>4</staff>
+      </note>
+      <barline location="right">
+        <repeat direction="backward" />
+        <ending number="1" type="stop" />
+      </barline>
+      <barline location="left">
+        <ending number="1" type="start" />
+      </barline>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8">Branch · condition Voice voice-12</words>
+        </direction-type>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8">Data relation · slur</words>
+        </direction-type>
+      </direction>
+    </measure>
+    <measure number="5">
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=1</words>
+        </direction-type>
+        <offset>0</offset>
+        <staff>3</staff>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=1</words>
+        </direction-type>
+        <offset>0</offset>
+        <staff>4</staff>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=2</words>
+        </direction-type>
+        <offset>8</offset>
+        <staff>4</staff>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=4</words>
+        </direction-type>
+        <offset>24</offset>
+        <staff>4</staff>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=6</words>
+        </direction-type>
+        <offset>56</offset>
+        <staff>4</staff>
+      </direction>
+      <note id="n-s1-v1-m5-1">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m5-2">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m5-3">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m5-4">
+        <rest />
+        <duration>8</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s1-v2-m5-1">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m5-2">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m5-3">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m5-4">
+        <rest />
+        <duration>8</duration>
+        <voice>2</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s1-v4-m5-1">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m5-2">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m5-3">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m5-4">
+        <rest />
+        <duration>8</duration>
+        <voice>4</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v1-m5-1">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m5-2">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m5-3">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m5-4">
+        <rest />
+        <duration>8</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v2-m5-1">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m5-2">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m5-3">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m5-4">
+        <rest />
+        <duration>8</duration>
+        <voice>6</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v3-m5-1">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m5-2">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m5-3">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m5-4">
+        <rest />
+        <duration>8</duration>
+        <voice>7</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v4-m5-1">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m5-2">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m5-3">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m5-4">
+        <rest />
+        <duration>8</duration>
+        <voice>8</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v1-m5-1">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m5-2">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m5-3">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m5-4">
+        <rest />
+        <duration>8</duration>
+        <voice>9</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v2-m5-1">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m5-2">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m5-3">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m5-4">
+        <rest />
+        <duration>8</duration>
+        <voice>10</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v3-m5-1">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m5-2">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m5-3">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m5-4">
+        <rest />
+        <duration>8</duration>
+        <voice>11</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v4-m5-1">
+        <pitch>
+          <step>G</step>
+          <alter>1</alter>
+          <octave>4</octave>
+        </pitch>
+        <duration>8</duration>
+        <voice>12</voice>
+        <type>quarter</type>
+        <accidental>sharp</accidental>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m5-2">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m5-3">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m5-4">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s4-v1-m5-1">
+        <pitch>
+          <step>A</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>8</duration>
+        <voice>13</voice>
+        <type>quarter</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m5-2">
+        <pitch>
+          <step>A</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>16</duration>
+        <voice>13</voice>
+        <type>half</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m5-3">
+        <pitch>
+          <step>A</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m5-4">
+        <pitch>
+          <step>A</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>32</duration>
+        <tie type="start" />
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+        <notations>
+          <tied type="start" />
+        </notations>
+      </note>
+      <note id="n-s4-v1-m5-5">
+        <pitch>
+          <step>A</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>16</duration>
+        <tie type="stop" />
+        <voice>13</voice>
+        <type>half</type>
+        <staff>4</staff>
+        <notations>
+          <tied type="stop" />
+        </notations>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s4-v2-m5-1">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m5-2">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m5-3">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m5-4">
+        <rest />
+        <duration>8</duration>
+        <voice>14</voice>
+        <type>quarter</type>
+        <staff>4</staff>
+      </note>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8">Voice · values</words>
+        </direction-type>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8">Array phrase</words>
+        </direction-type>
+      </direction>
+    </measure>
+    <measure number="6">
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8" default-y="55">value duration=1</words>
+        </direction-type>
+        <offset>0</offset>
+        <staff>4</staff>
+      </direction>
+      <note id="n-s1-v1-m6-1">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m6-2">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m6-3">
+        <rest />
+        <duration>32</duration>
+        <voice>1</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v1-m6-4">
+        <rest />
+        <duration>8</duration>
+        <voice>1</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s1-v2-m6-1">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m6-2">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m6-3">
+        <rest />
+        <duration>32</duration>
+        <voice>2</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v2-m6-4">
+        <rest />
+        <duration>8</duration>
+        <voice>2</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s1-v4-m6-1">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m6-2">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m6-3">
+        <rest />
+        <duration>32</duration>
+        <voice>4</voice>
+        <type>whole</type>
+        <staff>1</staff>
+      </note>
+      <note id="n-s1-v4-m6-4">
+        <rest />
+        <duration>8</duration>
+        <voice>4</voice>
+        <type>quarter</type>
+        <staff>1</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v1-m6-1">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m6-2">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m6-3">
+        <rest />
+        <duration>32</duration>
+        <voice>5</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v1-m6-4">
+        <rest />
+        <duration>8</duration>
+        <voice>5</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v2-m6-1">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m6-2">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m6-3">
+        <rest />
+        <duration>32</duration>
+        <voice>6</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v2-m6-4">
+        <rest />
+        <duration>8</duration>
+        <voice>6</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v3-m6-1">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m6-2">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m6-3">
+        <rest />
+        <duration>32</duration>
+        <voice>7</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v3-m6-4">
+        <rest />
+        <duration>8</duration>
+        <voice>7</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s2-v4-m6-1">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m6-2">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m6-3">
+        <rest />
+        <duration>32</duration>
+        <voice>8</voice>
+        <type>whole</type>
+        <staff>2</staff>
+      </note>
+      <note id="n-s2-v4-m6-4">
+        <rest />
+        <duration>8</duration>
+        <voice>8</voice>
+        <type>quarter</type>
+        <staff>2</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v1-m6-1">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m6-2">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m6-3">
+        <rest />
+        <duration>32</duration>
+        <voice>9</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v1-m6-4">
+        <rest />
+        <duration>8</duration>
+        <voice>9</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v2-m6-1">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m6-2">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m6-3">
+        <rest />
+        <duration>32</duration>
+        <voice>10</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v2-m6-4">
+        <rest />
+        <duration>8</duration>
+        <voice>10</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v3-m6-1">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m6-2">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m6-3">
+        <rest />
+        <duration>32</duration>
+        <voice>11</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v3-m6-4">
+        <rest />
+        <duration>8</duration>
+        <voice>11</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s3-v4-m6-1">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m6-2">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m6-3">
+        <rest />
+        <duration>32</duration>
+        <voice>12</voice>
+        <type>whole</type>
+        <staff>3</staff>
+      </note>
+      <note id="n-s3-v4-m6-4">
+        <rest />
+        <duration>8</duration>
+        <voice>12</voice>
+        <type>quarter</type>
+        <staff>3</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s4-v1-m6-1">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m6-2">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m6-3">
+        <rest />
+        <duration>32</duration>
+        <voice>13</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v1-m6-4">
+        <rest />
+        <duration>8</duration>
+        <voice>13</voice>
+        <type>quarter</type>
+        <staff>4</staff>
+      </note>
+      <backup>
+        <duration>104</duration>
+      </backup>
+      <note id="n-s4-v2-m6-1">
+        <pitch>
+          <step>B</step>
+          <octave>4</octave>
+        </pitch>
+        <duration>8</duration>
+        <voice>14</voice>
+        <type>quarter</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m6-2">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m6-3">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <note id="n-s4-v2-m6-4">
+        <rest />
+        <duration>32</duration>
+        <voice>14</voice>
+        <type>whole</type>
+        <staff>4</staff>
+      </note>
+      <barline location="right">
+        <bar-style>light-heavy</bar-style>
+      </barline>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8">To A · process</words>
+        </direction-type>
+      </direction>
+      <direction placement="above">
+        <direction-type>
+          <words font-size="8">Voice · result</words>
+        </direction-type>
+      </direction>
+    </measure>
+  </part>
+</score-partwise>

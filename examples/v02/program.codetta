@@ -1,0 +1,1320 @@
+{
+  "format": "codetta-score",
+  "format_version": "0.2",
+  "language_version": "0.2",
+  "score": {
+    "metadata": {
+      "title": "Codetta v0.2 process demo"
+    },
+    "parts": [
+      {
+        "id": "part-1",
+        "staves": [
+          {
+            "id": "staff-1",
+            "measures": [
+              {
+                "id": "measure-1-1",
+                "number": 1,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-1",
+                    "staff": 1,
+                    "name": "values",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-2",
+                    "staff": 1,
+                    "name": "total",
+                    "events": [
+                      {
+                        "type": "rest",
+                        "id": "event-3",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 4
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "voice-4",
+                    "staff": 1,
+                    "name": "i",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-5",
+                    "staff": 1,
+                    "name": "x",
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-1-2",
+                "number": 2,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-1",
+                    "staff": 1,
+                    "name": "values",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-2",
+                    "staff": 1,
+                    "name": "total",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-4",
+                    "staff": 1,
+                    "name": "i",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-5",
+                    "staff": 1,
+                    "name": "x",
+                    "events": [
+                      {
+                        "type": "note",
+                        "id": "event-10",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 4
+                        },
+                        "pitch": {
+                          "step": "F",
+                          "alter": 1,
+                          "octave": 3
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "measure-1-3",
+                "number": 3,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-1",
+                    "staff": 1,
+                    "name": "values",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-2",
+                    "staff": 1,
+                    "name": "total",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-4",
+                    "staff": 1,
+                    "name": "i",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-5",
+                    "staff": 1,
+                    "name": "x",
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-1-4",
+                "number": 4,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-1",
+                    "staff": 1,
+                    "name": "values",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-2",
+                    "staff": 1,
+                    "name": "total",
+                    "events": [
+                      {
+                        "type": "note",
+                        "id": "event-23",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 4
+                        },
+                        "pitch": {
+                          "step": "D",
+                          "alter": 0,
+                          "octave": 3
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "voice-4",
+                    "staff": 1,
+                    "name": "i",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-5",
+                    "staff": 1,
+                    "name": "x",
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-1-5",
+                "number": 5,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-1",
+                    "staff": 1,
+                    "name": "values",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-2",
+                    "staff": 1,
+                    "name": "total",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-4",
+                    "staff": 1,
+                    "name": "i",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-5",
+                    "staff": 1,
+                    "name": "x",
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-1-6",
+                "number": 6,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "light-heavy",
+                "voices": [
+                  {
+                    "id": "voice-1",
+                    "staff": 1,
+                    "name": "values",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-2",
+                    "staff": 1,
+                    "name": "total",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-4",
+                    "staff": 1,
+                    "name": "i",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-5",
+                    "staff": 1,
+                    "name": "x",
+                    "events": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "staff-2",
+            "measures": [
+              {
+                "id": "measure-2-1",
+                "number": 1,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-6",
+                    "staff": 2,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-8",
+                    "staff": 2,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-12",
+                    "staff": 2,
+                    "name": "condition_1",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-13",
+                    "staff": 2,
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-2-2",
+                "number": 2,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-6",
+                    "staff": 2,
+                    "events": [
+                      {
+                        "type": "cue",
+                        "id": "event-7",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 4
+                        },
+                        "pitch": {
+                          "step": "G",
+                          "alter": 0,
+                          "octave": 3
+                        },
+                        "source_voice_id": "voice-1"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "voice-8",
+                    "staff": 2,
+                    "events": [
+                      {
+                        "type": "cue",
+                        "id": "event-9",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 4
+                        },
+                        "pitch": {
+                          "step": "A",
+                          "alter": 0,
+                          "octave": 3
+                        },
+                        "source_voice_id": "voice-4"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "voice-12",
+                    "staff": 2,
+                    "name": "condition_1",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-13",
+                    "staff": 2,
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-2-3",
+                "number": 3,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-6",
+                    "staff": 2,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-8",
+                    "staff": 2,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-12",
+                    "staff": 2,
+                    "name": "condition_1",
+                    "events": [
+                      {
+                        "type": "note",
+                        "id": "event-17",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 4
+                        },
+                        "pitch": {
+                          "step": "B",
+                          "alter": 0,
+                          "octave": 3
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "voice-13",
+                    "staff": 2,
+                    "events": [
+                      {
+                        "type": "cue",
+                        "id": "event-14",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 4
+                        },
+                        "pitch": {
+                          "step": "C",
+                          "alter": 1,
+                          "octave": 4
+                        },
+                        "source_voice_id": "voice-5"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "measure-2-4",
+                "number": 4,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-6",
+                    "staff": 2,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-8",
+                    "staff": 2,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-12",
+                    "staff": 2,
+                    "name": "condition_1",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-13",
+                    "staff": 2,
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-2-5",
+                "number": 5,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-6",
+                    "staff": 2,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-8",
+                    "staff": 2,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-12",
+                    "staff": 2,
+                    "name": "condition_1",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-13",
+                    "staff": 2,
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-2-6",
+                "number": 6,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "light-heavy",
+                "voices": [
+                  {
+                    "id": "voice-6",
+                    "staff": 2,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-8",
+                    "staff": 2,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-12",
+                    "staff": 2,
+                    "name": "condition_1",
+                    "events": []
+                  },
+                  {
+                    "id": "voice-13",
+                    "staff": 2,
+                    "events": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "staff-3",
+            "measures": [
+              {
+                "id": "measure-3-1",
+                "number": 1,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-15",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-19",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-21",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-27",
+                    "staff": 3,
+                    "name": "values",
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-3-2",
+                "number": 2,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-15",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-19",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-21",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-27",
+                    "staff": 3,
+                    "name": "values",
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-3-3",
+                "number": 3,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-15",
+                    "staff": 3,
+                    "events": [
+                      {
+                        "type": "note",
+                        "id": "event-16",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 3,
+                          "d": 4
+                        },
+                        "pitch": {
+                          "step": "D",
+                          "alter": 0,
+                          "octave": 4
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "voice-19",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-21",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-27",
+                    "staff": 3,
+                    "name": "values",
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-3-4",
+                "number": 4,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-15",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-19",
+                    "staff": 3,
+                    "events": [
+                      {
+                        "type": "cue",
+                        "id": "event-20",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 4
+                        },
+                        "pitch": {
+                          "step": "E",
+                          "alter": 0,
+                          "octave": 4
+                        },
+                        "source_voice_id": "voice-2"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "voice-21",
+                    "staff": 3,
+                    "events": [
+                      {
+                        "type": "cue",
+                        "id": "event-22",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 4
+                        },
+                        "pitch": {
+                          "step": "F",
+                          "alter": 1,
+                          "octave": 4
+                        },
+                        "source_voice_id": "voice-5"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "voice-27",
+                    "staff": 3,
+                    "name": "values",
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-3-5",
+                "number": 5,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-15",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-19",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-21",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-27",
+                    "staff": 3,
+                    "name": "values",
+                    "events": [
+                      {
+                        "type": "note",
+                        "id": "event-33",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 4
+                        },
+                        "pitch": {
+                          "step": "G",
+                          "alter": 1,
+                          "octave": 4
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "measure-3-6",
+                "number": 6,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "light-heavy",
+                "voices": [
+                  {
+                    "id": "voice-15",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-19",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-21",
+                    "staff": 3,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-27",
+                    "staff": 3,
+                    "name": "values",
+                    "events": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "staff-4",
+            "measures": [
+              {
+                "id": "measure-4-1",
+                "number": 1,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-28",
+                    "staff": 4,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-35",
+                    "staff": 4,
+                    "name": "result",
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-4-2",
+                "number": 2,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-28",
+                    "staff": 4,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-35",
+                    "staff": 4,
+                    "name": "result",
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-4-3",
+                "number": 3,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-28",
+                    "staff": 4,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-35",
+                    "staff": 4,
+                    "name": "result",
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-4-4",
+                "number": 4,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-28",
+                    "staff": 4,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-35",
+                    "staff": 4,
+                    "name": "result",
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-4-5",
+                "number": 5,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "regular",
+                "voices": [
+                  {
+                    "id": "voice-28",
+                    "staff": 4,
+                    "events": [
+                      {
+                        "type": "note",
+                        "id": "event-29",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 4
+                        },
+                        "pitch": {
+                          "step": "A",
+                          "alter": 0,
+                          "octave": 4
+                        }
+                      },
+                      {
+                        "type": "note",
+                        "id": "event-30",
+                        "start": {
+                          "n": 1,
+                          "d": 4
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 2
+                        },
+                        "pitch": {
+                          "step": "A",
+                          "alter": 0,
+                          "octave": 4
+                        }
+                      },
+                      {
+                        "type": "note",
+                        "id": "event-31",
+                        "start": {
+                          "n": 3,
+                          "d": 4
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 1
+                        },
+                        "pitch": {
+                          "step": "A",
+                          "alter": 0,
+                          "octave": 4
+                        }
+                      },
+                      {
+                        "type": "note",
+                        "id": "event-32",
+                        "start": {
+                          "n": 7,
+                          "d": 4
+                        },
+                        "duration": {
+                          "n": 3,
+                          "d": 2
+                        },
+                        "pitch": {
+                          "step": "A",
+                          "alter": 0,
+                          "octave": 4
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "id": "voice-35",
+                    "staff": 4,
+                    "name": "result",
+                    "events": []
+                  }
+                ]
+              },
+              {
+                "id": "measure-4-6",
+                "number": 6,
+                "time_signature": {
+                  "beats": 13,
+                  "beat_type": 4
+                },
+                "key_signature": {
+                  "fifths": 0
+                },
+                "clef": {
+                  "sign": "G",
+                  "line": 2
+                },
+                "barline": "light-heavy",
+                "voices": [
+                  {
+                    "id": "voice-28",
+                    "staff": 4,
+                    "events": []
+                  },
+                  {
+                    "id": "voice-35",
+                    "staff": 4,
+                    "name": "result",
+                    "events": [
+                      {
+                        "type": "note",
+                        "id": "event-36",
+                        "start": {
+                          "n": 0,
+                          "d": 1
+                        },
+                        "duration": {
+                          "n": 1,
+                          "d": 4
+                        },
+                        "pitch": {
+                          "step": "B",
+                          "alter": 0,
+                          "octave": 4
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "spanners": [
+      {
+        "id": "display-relation-24",
+        "type": "slur",
+        "line_style": "solid",
+        "start_anchor": "event-20",
+        "end_anchor": "event-22",
+        "nesting_level": 2
+      }
+    ],
+    "voice_groups": [],
+    "phrases": [
+      {
+        "id": "phrase-34",
+        "start_anchor": "event-29",
+        "end_anchor": "event-32",
+        "voice_ids": [
+          "voice-28"
+        ],
+        "output_anchor": "event-33"
+      }
+    ],
+    "relations": [
+      {
+        "id": "relation-11",
+        "connector": "application",
+        "input_anchors": [
+          "event-7",
+          "event-9"
+        ],
+        "output_anchor": "event-10"
+      },
+      {
+        "id": "relation-18",
+        "connector": "hairpin-diminuendo",
+        "input_anchors": [
+          "event-14",
+          "event-16"
+        ],
+        "output_anchor": "event-17"
+      },
+      {
+        "id": "relation-24",
+        "connector": "slur",
+        "input_anchors": [
+          "event-20",
+          "event-22"
+        ],
+        "output_anchor": "event-23"
+      }
+    ],
+    "sections": [
+      {
+        "id": "section-1",
+        "name": "process",
+        "rehearsal_mark": "A",
+        "start_measure": "measure-1-1",
+        "end_measure": "measure-1-4",
+        "parameter_voice_ids": [
+          "voice-1"
+        ],
+        "return_voice_ids": [
+          "voice-2"
+        ]
+      }
+    ],
+    "section_references": [
+      {
+        "id": "section-reference-37",
+        "section_id": "section-1",
+        "anchor": "event-36",
+        "argument_voice_ids": [
+          "voice-27"
+        ],
+        "result_voice_ids": [
+          "voice-35"
+        ]
+      }
+    ],
+    "repeats": [
+      {
+        "id": "repeat-26",
+        "start_measure": "measure-1-2",
+        "end_measure": "measure-1-4",
+        "iterator_voice_id": "voice-4",
+        "collection_voice_id": "voice-1",
+        "test_at_end": false
+      }
+    ],
+    "voltas": [
+      {
+        "id": "volta-25",
+        "condition_voice_id": "voice-12",
+        "endings": [
+          {
+            "numbers": [
+              1
+            ],
+            "start_measure": "measure-1-4",
+            "end_measure": "measure-1-4"
+          }
+        ]
+      }
+    ]
+  }
+}
